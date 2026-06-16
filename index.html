@@ -601,7 +601,7 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#f8f9ff}
 // LODGE LOCKER — SUPABASE CONNECTED
 // Replace the two lines below with your project credentials
 // ══════════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_URL = 'https://vwvwyhwspsbsusurksrh.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3dnd5aHdzcHNic3VzdXJrc3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NzE2MDcsImV4cCI6MjA5NzE0NzYwN30.TmUYEjU7ttZqxC1l8BoPOkXG0pX1ZjJKTZAfI3T3hxM';
 // ══════════════════════════════════════════════════════════════════
 
@@ -676,6 +676,7 @@ async function handleLogin() {
   const pw = document.getElementById('l-pw').value;
   const errEl = document.getElementById('l-error');
   const btn = document.getElementById('l-btn');
+  errEl.style.color = 'var(--red)';
   errEl.textContent = '';
   if (!email) { errEl.textContent = 'Enter your email'; return; }
 
@@ -690,14 +691,26 @@ async function handleLogin() {
 
   if (!pw) { errEl.textContent = 'Enter your password'; return; }
   btn.disabled = true; btn.textContent = 'Signing in…';
+
+  // Show diagnostic info
+  errEl.style.color = 'var(--text-2)';
+  errEl.textContent = 'Connecting to ' + SUPABASE_URL + '…';
+
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
     btn.disabled = false; btn.textContent = 'Sign In';
-    if (error) { errEl.textContent = error.message; return; }
+    if (error) {
+      errEl.style.color = 'var(--red)';
+      errEl.textContent = 'Auth error: ' + error.message + ' (status: ' + (error.status||'unknown') + ')';
+      return;
+    }
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = 'Signed in! Loading app…';
     // onAuthStateChange will fire and load the app
   } catch (e) {
     btn.disabled = false; btn.textContent = 'Sign In';
-    errEl.textContent = 'Network error — check your internet connection and try again. (' + e.message + ')';
+    errEl.style.color = 'var(--red)';
+    errEl.textContent = 'Error: ' + e.name + ' — ' + e.message;
   }
 }
 
