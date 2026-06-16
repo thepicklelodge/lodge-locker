@@ -464,6 +464,10 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#f8f9ff}
               <button class="btn btn-primary" style="justify-content:center" onclick="crSyncImages()">
                 <i class="ti ti-photo"></i>Sync Product Images
               </button>
+              <button class="btn" style="justify-content:center;border-color:#74cf29;color:#74cf29" onclick="document.getElementById('xlsx-upload').click()">
+                <i class="ti ti-file-spreadsheet"></i>Import From CourtReserve Export
+              </button>
+              <input type="file" id="xlsx-upload" accept=".xlsx,.csv" style="display:none" onchange="handleXLSXUpload(this)">
             </div>
             <div id="cr-action-result" style="margin-top:14px;font-size:12px;line-height:1.7"></div>
           </div>
@@ -1561,6 +1565,220 @@ async function saveItem(){
 // ── EXPORTS / UTILS ────────────────────────────────────────────────
 function downloadCSV(rows,filename){const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=filename;a.click();}
 
+
+// ── XLSX / CSV IMPORTER ────────────────────────────────────────────
+async function handleXLSXUpload(input) {
+  const file = input.files[0];
+  if (!file) return;
+  showLoading();
+
+  // We'll read the file and parse it
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      // Dynamically load SheetJS for XLSX parsing
+      if (!window.XLSX) {
+        await new Promise((resolve, reject) => {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js';
+          s.onload = resolve; s.onerror = reject;
+          document.head.appendChild(s);
+        });
+      }
+      const data = new Uint8Array(e.target.result);
+      const wb = window.XLSX.read(data, { type: 'array' });
+      const ws = wb.Sheets[wb.SheetNames[0]];
+      const rows = window.XLSX.utils.sheet_to_json(ws, { header: 1 });
+
+      if (rows.length < 2) { hideLoading(); toast('File appears empty'); return; }
+
+      const headers = rows[0].map(h => String(h||'').trim().toLowerCase());
+      console.log('Headers:', headers);
+
+      // Map CourtReserve columns
+      const nameIdx   = headers.findIndex(h => h.includes('item name') || h.includes('name'));
+      const catIdx    = headers.findIndex(h => h.includes('category'));
+      const brandIdx  = headers.findIndex(h => h.includes('manufacturer') || h.includes('brand'));
+      const costIdx   = headers.findIndex(h => h.includes('unit cost') || h.includes('cost'));
+      const retailIdx = headers.findIndex(h => h.includes('retail') || h.includes('price'));
+      const stockIdx  = headers.findIndex(h => h.includes('stock') || h.includes('on-hand') || h.includes('onhand') || h.includes('qty'));
+
+      if (nameIdx === -1) { hideLoading(); toast('Could not find Item Name column'); return; }
+
+      // Category mapping
+      const CAT_MAP = {
+        'paddles':'Paddles','accessories':'Accessories','apparel':'Apparel',
+        'footwear':'Footwear','hats':'Apparel','eyewear':'Accessories',
+        'balls':'Balls','bags':'Bags',
+      };
+      const SKIP = ['member fees','gift cards','no show'];
+      const PADDLE_KEYWORDS = ['paddle','pro v','boomstik','dauntless','hyperion','agassi','perseus','scorpeus','kosmos','slk','selkirk omni'];
+      const APPAREL_KEYWORDS = ['shirt','zip','tank','shorts','jacket','hoodie','tee','apparel'];
+      const FOOTWEAR_KEYWORDS = ['sock','shoe','slide','footwear','sneaker'];
+      const BALL_KEYWORDS = ['ball','pickleball'];
+
+      function getCategory(crCat, name) {
+        const catL = (crCat||'').toLowerCase();
+        const nameL = (name||'').toLowerCase();
+        if (SKIP.some(s => catL.includes(s) || nameL.includes(s))) return null;
+        if (CAT_MAP[catL]) return CAT_MAP[catL];
+        if (PADDLE_KEYWORDS.some(k => nameL.includes(k))) return 'Paddles';
+        if (APPAREL_KEYWORDS.some(k => nameL.includes(k))) return 'Apparel';
+        if (FOOTWEAR_KEYWORDS.some(k => nameL.includes(k))) return 'Footwear';
+        if (BALL_KEYWORDS.some(k => nameL.includes(k))) return 'Balls';
+        if (nameL.includes('bag') || nameL.includes('backpack')) return 'Bags';
+        if (nameL.includes('hat') || nameL.includes('visor') || nameL.includes('cap')) return 'Apparel';
+        if (catL.includes('paddle') || PADDLE_KEYWORDS.some(k => catL.includes(k))) return 'Paddles';
+        return 'Accessories';
+      }
+
+      function parsePrice(val) {
+        if (!val) return 0;
+        const s = String(val).replace(/[$,]/g, '').trim();
+        if (s.includes('-')) {
+          const parts = s.split('-').map(p => parseFloat(p.trim())).filter(n => !isNaN(n));
+          return parts.length ? parts.reduce((a,b)=>a+b,0)/parts.length : 0;
+        }
+        return parseFloat(s) || 0;
+      }
+
+      // Get current location from selector
+      const loc = document.getElementById('cr-action-loc')?.value || 'f52';
+
+      // Parse rows
+      const toImport = [];
+      const seen = {};
+      for (const row of rows.slice(1)) {
+        const name = String(row[nameIdx]||'').trim();
+        if (!name) continue;
+        const crCat = String(row[catIdx]||'').trim();
+        const cat = getCategory(crCat, name);
+        if (!cat) continue;
+
+        const cost   = parsePrice(costIdx >= 0 ? row[costIdx] : 0);
+        const retail = parsePrice(retailIdx >= 0 ? row[retailIdx] : 0);
+        const stock  = stockIdx >= 0 ? (parseInt(String(row[stockIdx]||'0').trim()) || 0) : 0;
+        const brand  = String(row[brandIdx]||'Unknown').trim();
+
+        // Generate unique SKU
+        let sku = name.replace(/[^a-zA-Z0-9 ]/g,'').trim().replace(/\s+/g,'-').toUpperCase().slice(0,15);
+        if (seen[sku]) { seen[sku]++; sku = sku.slice(0,13) + '-' + seen[sku]; } else seen[sku] = 1;
+
+        toImport.push({ name, sku, category: cat, brand, cost, retail,
+          threshold: 3, reorder_qty: 6, stock, loc });
+      }
+
+      hideLoading();
+      if (!toImport.length) { toast('No importable items found'); return; }
+
+      // Show preview before importing
+      showImportPreview(toImport, loc);
+    } catch(err) {
+      hideLoading();
+      console.error(err);
+      toast('Error reading file: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function showImportPreview(items, loc) {
+  const cats = {};
+  items.forEach(i => { cats[i.category] = (cats[i.category]||0) + 1; });
+  const catSummary = Object.entries(cats).map(([c,n]) => `${n} ${c}`).join(', ');
+  const totalStock = items.reduce((s,i) => s+i.stock, 0);
+  const totalRetail = items.reduce((s,i) => s+i.retail*i.stock, 0);
+
+  document.getElementById('cr-action-result').innerHTML = `
+    <div style="background:#f0f2fa;border:1px solid #d8dcf0;border-radius:var(--r-md);padding:14px">
+      <div style="font-weight:600;font-size:13px;color:var(--navy);margin-bottom:8px">
+        <i class="ti ti-file-spreadsheet"></i> Ready to import ${items.length} items into ${LOC_LABELS[loc]}
+      </div>
+      <div style="font-size:12px;color:var(--text-2);margin-bottom:10px">
+        ${catSummary}<br>
+        ${totalStock} units on hand · ${fmt(totalRetail)} retail value
+      </div>
+      <div style="max-height:180px;overflow-y:auto;margin-bottom:10px;font-size:12px">
+        ${items.slice(0,10).map(i =>
+          `<div style="padding:3px 0;border-bottom:1px solid var(--border)">${i.name} <span style="color:var(--text-3)">${i.brand} · ${i.category} · stock: ${i.stock}</span></div>`
+        ).join('')}
+        ${items.length > 10 ? `<div style="color:var(--text-3);padding:4px 0">…and ${items.length-10} more</div>` : ''}
+      </div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary" style="flex:1;justify-content:center" onclick="confirmXLSXImport(window._importItems, window._importLoc)">
+          <i class="ti ti-download"></i>Import All ${items.length} Items
+        </button>
+        <button class="btn" onclick="document.getElementById('cr-action-result').innerHTML=''">Cancel</button>
+      </div>
+    </div>`;
+
+  window._importItems = items;
+  window._importLoc = loc;
+}
+
+async function confirmXLSXImport(items, loc) {
+  showLoading();
+  let imported = 0, updated = 0, errors = 0;
+
+  for (const item of items) {
+    try {
+      // Check if SKU already exists
+      const { data: existing } = await sb.from('inventory').select('id').eq('sku', item.sku).single();
+
+      let itemId;
+      if (existing) {
+        await sb.from('inventory').update({
+          name: item.name, category: item.category, brand: item.brand,
+          cost: item.cost, retail: item.retail
+        }).eq('id', existing.id);
+        itemId = existing.id;
+        updated++;
+      } else {
+        const { data: newItem, error } = await sb.from('inventory').insert({
+          name: item.name, sku: item.sku, category: item.category, brand: item.brand,
+          cost: item.cost, retail: item.retail, threshold: item.threshold,
+          reorder_qty: item.reorder_qty, active: true
+        }).select().single();
+        if (error) { errors++; console.error(error); continue; }
+        itemId = newItem.id;
+        imported++;
+      }
+
+      // Set stock for this location
+      await sb.from('inventory_stock').upsert({
+        item_id: itemId, location_id: loc, qty: item.stock
+      }, { onConflict: 'item_id,location_id' });
+
+      // Ensure 0-stock rows exist for other locations
+      for (const otherLoc of LOCS.filter(l => l !== loc)) {
+        await sb.from('inventory_stock').upsert({
+          item_id: itemId, location_id: otherLoc, qty: 0
+        }, { onConflict: 'item_id,location_id' });
+      }
+    } catch(e) {
+      errors++;
+      console.error('Import error for', item.name, e);
+    }
+  }
+
+  await loadInventory();
+  hideLoading();
+  renderAll();
+
+  document.getElementById('cr-action-result').innerHTML = `
+    <div style="color:var(--green);font-weight:600;font-size:13px">
+      <i class="ti ti-circle-check"></i> Import complete!
+    </div>
+    <div style="font-size:12px;color:var(--text-2);margin-top:6px">
+      ${imported} new items added · ${updated} existing items updated · ${errors} errors
+    </div>
+    <div style="font-size:11px;color:var(--text-3);margin-top:4px">
+      Stock set for ${LOC_LABELS[loc]}. Use Cycle Count to enter quantities for other locations.
+    </div>`;
+
+  addCRLog(`Imported ${imported} items, updated ${updated} from spreadsheet`, true);
+  toast(`${imported + updated} items imported from CourtReserve export!`);
+}
 // ── INIT ───────────────────────────────────────────────────────────
 // Set logo on login screen immediately
 document.getElementById('login-logo').src = LOGO_LOGIN;
