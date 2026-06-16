@@ -438,17 +438,66 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#f8f9ff}
 
     <!-- COURTRESERVE -->
     <div class="tab-panel" id="tab-courtreserve">
-      <div class="warn-box"><strong>CORS limitation:</strong> Real-time sync requires a Supabase Edge Function proxy. Your credentials are saved securely — sync will work once the proxy is deployed. The 401 error you saw confirms your credentials reach CourtReserve correctly.</div>
+      <div class="info-box"><strong>Proxy deployed!</strong> Lodge Locker now routes CourtReserve API calls through a Supabase Edge Function — no more CORS errors. Use the buttons below to test your connection and pull product data.</div>
       <div class="grid-2">
-        <div><div class="section-hd"><span class="section-title">Status</span></div><div class="card card-pad" id="cr-status-list"></div></div>
+        <!-- LEFT: STATUS + ACTIONS -->
+        <div>
+          <div class="section-hd"><span class="section-title">Connection Status</span></div>
+          <div class="card card-pad" id="cr-status-list"></div>
+
+          <div class="section-hd" style="margin-top:4px"><span class="section-title">Actions</span></div>
+          <div class="card card-pad">
+            <div class="form-row"><label class="form-label">Location</label>
+              <select class="form-input" id="cr-action-loc">
+                <option value="f52">Factory 52</option>
+                <option value="lunken">Lunken Landing</option>
+                <option value="northshore">North Shore</option>
+              </select>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <button class="btn btn-primary" style="justify-content:center" onclick="crTestConnection()">
+                <i class="ti ti-wifi"></i>Test Connection
+              </button>
+              <button class="btn btn-primary" style="justify-content:center" onclick="crPullProducts()">
+                <i class="ti ti-download"></i>Pull All Products From CourtReserve
+              </button>
+              <button class="btn btn-primary" style="justify-content:center" onclick="crSyncImages()">
+                <i class="ti ti-photo"></i>Sync Product Images
+              </button>
+            </div>
+            <div id="cr-action-result" style="margin-top:14px;font-size:12px;line-height:1.7"></div>
+          </div>
+
+          <div class="section-hd" style="margin-top:4px"><span class="section-title">Action Log</span></div>
+          <div class="card card-pad" id="cr-log" style="max-height:240px;overflow-y:auto;font-size:12px">
+            <div style="color:var(--text-3);text-align:center;padding:12px">No activity yet</div>
+          </div>
+        </div>
+
+        <!-- RIGHT: CREDENTIALS -->
         <div>
           <div class="section-hd"><span class="section-title">Credentials</span></div>
           <div class="card card-pad">
-            <div class="form-row"><label class="form-label">Location</label><select class="form-input" id="cr-loc" onchange="loadCRConfig()"><option value="f52">Factory 52</option><option value="lunken">Lunken Landing</option><option value="northshore">North Shore</option></select></div>
+            <div class="form-row"><label class="form-label">Location</label>
+              <select class="form-input" id="cr-loc" onchange="loadCRConfig()">
+                <option value="f52">Factory 52</option>
+                <option value="lunken">Lunken Landing</option>
+                <option value="northshore">North Shore</option>
+              </select>
+            </div>
             <div class="form-row"><label class="form-label">Org ID</label><input class="form-input" id="cr-org-id"></div>
             <div class="form-row"><label class="form-label">API Key</label><input class="form-input" type="password" id="cr-api-key"></div>
             <div class="form-row"><label class="form-label">Base URL</label><input class="form-input" id="cr-base-url" value="https://app.courtreserve.com/api/v1"></div>
-            <button class="btn btn-primary" onclick="saveCRConfig()"><i class="ti ti-device-floppy"></i>Save Credentials</button>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveCRConfig()">
+              <i class="ti ti-device-floppy"></i>Save Credentials
+            </button>
+          </div>
+
+          <div class="section-hd" style="margin-top:4px"><span class="section-title">Import Preview</span></div>
+          <div class="card card-pad" id="cr-import-preview">
+            <div style="color:var(--text-3);font-size:12px;text-align:center;padding:12px">
+              Pull products to preview what will be imported
+            </div>
           </div>
         </div>
       </div>
@@ -552,8 +601,8 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#f8f9ff}
 // LODGE LOCKER — SUPABASE CONNECTED
 // Replace the two lines below with your project credentials
 // ══════════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://vwvwyhwspsbsusurksrh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ3dnd5aHdzcHNic3VzdXJrc3JoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE1NzE2MDcsImV4cCI6MjA5NzE0NzYwN30.TmUYEjU7ttZqxC1l8BoPOkXG0pX1ZjJKTZAfI3T3hxM';
+const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
+const SUPABASE_KEY = 'YOUR_ANON_PUBLIC_KEY';
 // ══════════════════════════════════════════════════════════════════
 
 const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -1268,9 +1317,212 @@ function openMailto(){const to=encodeURIComponent(document.getElementById('email
 // ── COURTRESERVE ───────────────────────────────────────────────────
 async function renderCRStatus(){
   const{data}=await sb.from('cr_config').select('*');
-  document.getElementById('cr-status-list').innerHTML=LOCS.map(l=>{const cfg=(data||[]).find(c=>c.location_id===l)||{};const hasKey=cfg.api_key&&cfg.org_id;const dotColor=hasKey&&cfg.status==='connected'?'var(--green)':cfg.status==='error'?'var(--red)':'var(--amber)';return`<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)"><div style="display:flex;align-items:center;gap:10px"><div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0"></div><div><div style="font-weight:600">${LOC_LABELS[l]}</div><div style="font-size:11px;color:var(--text-3)">${hasKey?'Org: '+cfg.org_id:'Not configured'}</div></div></div><span class="badge ${hasKey?'badge-draft':'badge-staff'}">${hasKey?'Configured':'Not Configured'}</span></div>`;}).join('');}
-async function loadCRConfig(){const l=document.getElementById('cr-loc').value;const{data}=await sb.from('cr_config').select('*').eq('location_id',l).single();document.getElementById('cr-org-id').value=data?.org_id||'';document.getElementById('cr-api-key').value=data?.api_key||'';document.getElementById('cr-base-url').value=data?.base_url||'https://app.courtreserve.com/api/v1';}
-async function saveCRConfig(){const l=document.getElementById('cr-loc').value;await sb.from('cr_config').update({org_id:document.getElementById('cr-org-id').value.trim(),api_key:document.getElementById('cr-api-key').value.trim(),base_url:document.getElementById('cr-base-url').value.trim(),updated_at:new Date().toISOString()}).eq('location_id',l);toast('Credentials saved for '+LOC_LABELS[l]);renderCRStatus();}
+  document.getElementById('cr-status-list').innerHTML=LOCS.map(l=>{
+    const cfg=(data||[]).find(c=>c.location_id===l)||{};
+    const hasKey=cfg.api_key&&cfg.org_id;
+    const dotColor=cfg.status==='connected'?'var(--green)':cfg.status==='error'?'var(--red)':'var(--amber)';
+    const lastSync=cfg.last_synced?new Date(cfg.last_synced).toLocaleString():'Never';
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:8px;height:8px;border-radius:50%;background:${dotColor};flex-shrink:0"></div>
+        <div>
+          <div style="font-weight:600">${LOC_LABELS[l]}</div>
+          <div style="font-size:11px;color:var(--text-3)">${hasKey?'Org: '+cfg.org_id:'Not configured'}</div>
+          <div style="font-size:10px;color:var(--text-3)">Last sync: ${lastSync}</div>
+        </div>
+      </div>
+      <span class="badge ${cfg.status==='connected'?'badge-in':hasKey?'badge-draft':'badge-staff'}">${cfg.status==='connected'?'Connected':hasKey?'Configured':'Not Configured'}</span>
+    </div>`;
+  }).join('');
+}
+
+async function loadCRConfig(){
+  const l=document.getElementById('cr-loc').value;
+  const{data}=await sb.from('cr_config').select('*').eq('location_id',l).single();
+  document.getElementById('cr-org-id').value=data?.org_id||'';
+  document.getElementById('cr-api-key').value=data?.api_key||'';
+  document.getElementById('cr-base-url').value=data?.base_url||'https://app.courtreserve.com/api/v1';
+}
+
+async function saveCRConfig(){
+  const l=document.getElementById('cr-loc').value;
+  await sb.from('cr_config').update({
+    org_id:document.getElementById('cr-org-id').value.trim(),
+    api_key:document.getElementById('cr-api-key').value.trim(),
+    base_url:document.getElementById('cr-base-url').value.trim(),
+    updated_at:new Date().toISOString()
+  }).eq('location_id',l);
+  toast('Credentials saved for '+LOC_LABELS[l]);
+  renderCRStatus();
+}
+
+// ── PROXY CALLER ───────────────────────────────────────────────────
+async function callProxy(action, extra={}) {
+  const loc = document.getElementById('cr-action-loc')?.value || 'f52';
+  const { data: { session } } = await sb.auth.getSession();
+  const token = session?.access_token;
+  if (!token) { toast('Not logged in'); return null; }
+
+  const res = await fetch(
+    `${SUPABASE_URL}/functions/v1/courtreserve-proxy`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_KEY,
+      },
+      body: JSON.stringify({ action, location_id: loc, ...extra })
+    }
+  );
+  const data = await res.json();
+  return data;
+}
+
+function addCRLog(msg, ok=true) {
+  const el = document.getElementById('cr-log');
+  const time = new Date().toLocaleTimeString();
+  const existing = el.innerHTML === '<div style="color:var(--text-3);text-align:center;padding:12px">No activity yet</div>' ? '' : el.innerHTML;
+  el.innerHTML = `<div style="padding:6px 0;border-bottom:1px solid var(--border)">
+    <div style="display:flex;justify-content:space-between">
+      <span style="font-weight:600;color:${ok?'var(--green)':'var(--red)'}">${msg}</span>
+      <span style="font-size:10px;color:var(--text-3)">${time}</span>
+    </div>
+  </div>` + existing;
+}
+
+function showCRResult(html) {
+  document.getElementById('cr-action-result').innerHTML = html;
+}
+
+// ── TEST CONNECTION ─────────────────────────────────────────────────
+async function crTestConnection() {
+  const loc = document.getElementById('cr-action-loc')?.value || 'f52';
+  showCRResult('<span style="color:var(--text-3)"><i class="ti ti-loader"></i> Testing connection…</span>');
+  const data = await callProxy('test');
+  if (!data) return;
+  if (data.ok) {
+    showCRResult(`<div style="color:var(--green);font-weight:600"><i class="ti ti-circle-check"></i> ${data.message}</div>`);
+    addCRLog(`${LOC_LABELS[loc]}: Connected ✓`, true);
+  } else {
+    showCRResult(`<div style="color:var(--red);font-weight:600"><i class="ti ti-alert-circle"></i> ${data.message||'Connection failed'}</div>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--text-2)">Status: ${data.status||'unknown'}</div>`);
+    addCRLog(`${LOC_LABELS[loc]}: ${data.message||'Failed'}`, false);
+  }
+  renderCRStatus();
+}
+
+// ── PULL PRODUCTS ───────────────────────────────────────────────────
+async function crPullProducts() {
+  const loc = document.getElementById('cr-action-loc')?.value || 'f52';
+  showCRResult('<span style="color:var(--text-3)"><i class="ti ti-loader"></i> Pulling products from CourtReserve…</span>');
+  const data = await callProxy('get_products');
+  if (!data) return;
+
+  if (data.ok && data.products) {
+    const products = Array.isArray(data.products) ? data.products : (data.products.items || data.products.data || []);
+    const count = products.length;
+
+    // Show import preview
+    const previewEl = document.getElementById('cr-import-preview');
+    if (count === 0) {
+      previewEl.innerHTML = `<div style="color:var(--text-3);font-size:12px;text-align:center;padding:12px">No products returned from CourtReserve</div>`;
+      showCRResult(`<div style="color:var(--amber);font-weight:600">CourtReserve returned 0 products. Your API key may not have product access — contact your CR rep.</div>`);
+      return;
+    }
+
+    // Show first few products as preview
+    const preview = products.slice(0, 5).map(p => {
+      const name = p.name || p.Name || p.productName || p.title || JSON.stringify(p).slice(0,40);
+      const img = p.imageUrl || p.image_url || p.photo || p.photoUrl || p.ImageUrl || '—';
+      const price = p.price || p.Price || p.retailPrice || '—';
+      return `<div style="padding:6px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <div style="font-weight:500">${name}</div>
+        <div style="color:var(--text-3);font-size:11px">Price: ${price} · Image: ${img!=='—'?'✓ Found':'✗ None'}</div>
+      </div>`;
+    }).join('');
+
+    previewEl.innerHTML = `
+      <div style="font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px">${count} products found in CourtReserve</div>
+      ${preview}
+      ${count > 5 ? `<div style="font-size:11px;color:var(--text-3);padding:6px 0">…and ${count-5} more</div>` : ''}
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:12px" onclick="crImportProducts(${JSON.stringify(products).replace(/"/g,'&quot;')})">
+        <i class="ti ti-download"></i> Import All ${count} Products Into Lodge Locker
+      </button>`;
+
+    showCRResult(`<div style="color:var(--green);font-weight:600"><i class="ti ti-circle-check"></i> Found ${count} products — review the preview and click Import</div>`);
+    addCRLog(`${LOC_LABELS[loc]}: Pulled ${count} products`, true);
+  } else {
+    showCRResult(`<div style="color:var(--red);font-weight:600"><i class="ti ti-alert-circle"></i> ${data.message||'Could not pull products'}</div>
+      <div style="margin-top:8px;font-size:11.5px;color:var(--text-2)">Your API key may not have product read access. Try contacting your CourtReserve rep and asking for "inventory API access".</div>`);
+    addCRLog(`${LOC_LABELS[loc]}: Pull failed — ${data.message||'unknown error'}`, false);
+  }
+}
+
+// ── IMPORT PRODUCTS ─────────────────────────────────────────────────
+async function crImportProducts(products) {
+  showLoading();
+  let imported = 0, skipped = 0;
+  for (const p of products) {
+    const name = p.name || p.Name || p.productName || p.title;
+    const sku  = p.sku  || p.Sku  || p.SKU || p.itemNumber || p.id || String(Math.random()).slice(2,10);
+    const cost   = parseFloat(p.cost || p.Cost || p.wholesalePrice || 0);
+    const retail = parseFloat(p.price || p.Price || p.retailPrice || p.salePrice || 0);
+    const img    = p.imageUrl || p.image_url || p.photoUrl || p.ImageUrl || null;
+    const crId   = String(p.id || p.Id || p.productId || '');
+    const cat    = p.category || p.Category || p.productCategory || 'Accessories';
+    const brand  = p.brand || p.Brand || p.manufacturer || 'Unknown';
+    if (!name) { skipped++; continue; }
+
+    // Upsert by SKU so re-importing doesn't duplicate
+    const { data: existing } = await sb.from('inventory').select('id').eq('sku', sku).single();
+    if (existing) {
+      await sb.from('inventory').update({ name, img_url: img, cr_id: crId, cost, retail }).eq('sku', sku);
+    } else {
+      const { data: newItem } = await sb.from('inventory').insert({
+        name, sku, category: cat, brand, cost, retail, threshold: 3, reorder_qty: 6, cr_id: crId, img_url: img
+      }).select().single();
+      if (newItem) {
+        // Create stock rows at 0 for each location
+        for (const loc of LOCS) {
+          await sb.from('inventory_stock').upsert({ item_id: newItem.id, location_id: loc, qty: 0 }, { onConflict: 'item_id,location_id' });
+        }
+      }
+    }
+    imported++;
+  }
+  await loadInventory();
+  hideLoading();
+  const previewEl = document.getElementById('cr-import-preview');
+  previewEl.innerHTML = `<div style="color:var(--green);font-weight:600;font-size:13px;padding:8px 0"><i class="ti ti-circle-check"></i> ${imported} products imported into Lodge Locker!</div>
+    <div style="font-size:12px;color:var(--text-2)">Go to Inventory to review. Use Cycle Count to enter stock levels at each location.</div>`;
+  addCRLog(`Imported ${imported} products (${skipped} skipped)`, true);
+  toast(`${imported} products imported from CourtReserve!`);
+  renderAll();
+}
+
+// ── SYNC IMAGES ─────────────────────────────────────────────────────
+async function crSyncImages() {
+  const loc = document.getElementById('cr-action-loc')?.value || 'f52';
+  const itemsWithCR = inventory.filter(i => i.cr_id);
+  if (!itemsWithCR.length) {
+    showCRResult(`<div style="color:var(--amber);font-weight:600"><i class="ti ti-alert-triangle"></i> No items have CourtReserve IDs set. Import products first, or add CR IDs to existing items manually.</div>`);
+    return;
+  }
+  showCRResult(`<span style="color:var(--text-3)"><i class="ti ti-loader"></i> Syncing images for ${itemsWithCR.length} items…</span>`);
+  const data = await callProxy('sync_images');
+  if (!data) return;
+  if (data.ok) {
+    showCRResult(`<div style="color:var(--green);font-weight:600"><i class="ti ti-circle-check"></i> ${data.message}</div>
+      <div style="margin-top:8px;font-size:11.5px">${(data.results||[]).filter(r=>r.status==='updated').map(r=>`<div style="padding:3px 0">✓ ${r.name}</div>`).join('')}</div>`);
+    addCRLog(`Image sync: ${data.updated} updated, ${data.failed} skipped`, data.updated > 0);
+    await loadInventory();
+    renderInventory();
+  } else {
+    showCRResult(`<div style="color:var(--red);font-weight:600"><i class="ti ti-alert-circle"></i> ${data.message||'Sync failed'}</div>`);
+    addCRLog(`Image sync failed: ${data.message||'unknown'}`, false);
+  }
+}
 
 // ── ITEM MODAL ─────────────────────────────────────────────────────
 function openAddModal(){editItemId=null;document.getElementById('item-modal-title').textContent='Add New Item';['f-name','f-sku','f-brand','f-cr-id','f-img-url'].forEach(id=>document.getElementById(id).value='');['f-cost','f-retail'].forEach(id=>document.getElementById(id).value='0');['f-f52','f-lunken','f-northshore'].forEach(id=>document.getElementById(id).value='0');document.getElementById('f-threshold').value='3';document.getElementById('f-reorder-qty').value='6';document.getElementById('item-modal').style.display='flex';}
