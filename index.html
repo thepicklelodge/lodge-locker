@@ -1,0 +1,1624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Lodge Locker — The Pickle Lodge Pro Shop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/tabler-icons.min.css">
+<style>
+:root{--navy:#2b3252;--navy-dark:#1e2439;--navy-mid:#3a4468;--f52:#79cd46;--f52-light:#e9f8de;--f52-dark:#3a6b1a;--lunken:#ff7040;--lunken-light:#ffe8e0;--lunken-dark:#b03c1a;--north:#73c0d2;--north-light:#e0f3f8;--north-dark:#1a6880;--surface:#f4f5f8;--white:#ffffff;--border:rgba(0,0,0,0.08);--border-mid:rgba(0,0,0,0.14);--text-1:#1a1d2e;--text-2:#5a6080;--text-3:#9098b8;--green:#1D9E75;--green-light:#E1F5EE;--amber:#EF9F27;--amber-light:#FAEEDA;--red:#E24B4A;--red-light:#FCEBEB;--shadow-sm:0 1px 3px rgba(0,0,0,0.08),0 1px 2px rgba(0,0,0,0.04);--shadow-md:0 4px 12px rgba(0,0,0,0.1),0 2px 4px rgba(0,0,0,0.06);--r-sm:6px;--r-md:10px;--r-lg:14px}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',system-ui,sans-serif;font-size:13px;color:var(--text-1);background:var(--surface);line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+input,select,textarea{font-family:inherit}
+
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{width:224px;flex-shrink:0;background:var(--navy-dark);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden}
+.sidebar-logo{padding:18px 16px 16px;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;align-items:center}
+.sidebar-logo img{width:160px;height:auto;object-fit:contain}
+.sidebar-app-name{display:none}
+.nav-section{font-size:9px;font-weight:600;color:rgba(255,255,255,0.28);text-transform:uppercase;letter-spacing:1px;padding:14px 18px 4px}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 18px;font-size:12.5px;color:rgba(255,255,255,0.55);border-left:3px solid transparent;cursor:pointer;transition:all 0.12s;user-select:none}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
+.nav-item.active{background:rgba(255,255,255,0.1);color:#fff;font-weight:500;border-left-color:var(--f52)}
+.nav-item .ti{font-size:15px;width:15px;flex-shrink:0}
+.sidebar-footer{margin-top:auto;padding:12px 18px;border-top:1px solid rgba(255,255,255,0.07);font-size:10px;color:rgba(255,255,255,0.2)}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{background:var(--white);border-bottom:1px solid var(--border);padding:10px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-shrink:0;box-shadow:var(--shadow-sm)}
+.page-title{font-size:15px;font-weight:600;color:var(--navy)}
+.loc-tabs{display:flex;gap:4px}
+.loc-tab{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border-mid);font-size:11.5px;font-weight:500;cursor:pointer;background:transparent;color:var(--text-2);transition:all 0.12s}
+.loc-tab:hover{border-color:var(--navy);color:var(--navy)}
+.loc-tab[data-loc="all"].active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.loc-tab[data-loc="f52"].active{background:var(--f52);color:#1a2200;border-color:var(--f52)}
+.loc-tab[data-loc="lunken"].active{background:var(--lunken);color:#fff;border-color:var(--lunken)}
+.loc-tab[data-loc="northshore"].active{background:var(--north);color:#0d3a45;border-color:var(--north)}
+.content{flex:1;overflow-y:auto;padding:20px 22px;background:var(--surface)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* METRICS */
+.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;box-shadow:var(--shadow-sm)}
+.metric-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-3);margin-bottom:5px}
+.metric-value{font-size:24px;font-weight:600;color:var(--navy);line-height:1}
+.metric-sub{font-size:11px;color:var(--text-2);margin-top:4px}
+
+/* SECTION */
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.section-title{font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:var(--text-3)}
+
+/* CARDS */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);overflow:hidden;margin-bottom:16px}
+.card-pad{padding:16px 18px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{text-align:left;padding:9px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);border-bottom:1px solid var(--border);white-space:nowrap;background:#fafbfc}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8f9ff}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600}
+.badge-in{background:var(--green-light);color:#0d6b4a}
+.badge-low{background:var(--amber-light);color:#7a5000}
+.badge-out{background:var(--red-light);color:#8a1a1a}
+.badge-draft{background:#E6F1FB;color:#185FA5}
+.badge-ordered{background:var(--amber-light);color:#7a5000}
+.badge-received{background:var(--green-light);color:#0d6b4a}
+.badge-partial{background:#EEEDFE;color:#3C3489}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:var(--r-sm);font-size:12.5px;font-weight:500;border:1.5px solid var(--border-mid);background:var(--white);color:var(--text-1);cursor:pointer;transition:all 0.12s}
+.btn:hover{border-color:var(--navy);color:var(--navy)}
+.btn-primary{background:#74cf29;color:#fff;border-color:#74cf29}
+.btn-primary:hover{background:#2b3252;border-color:#2b3252;color:#fff}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green)}
+.btn-green:hover{opacity:0.88}
+.btn-amber{background:var(--amber);color:#fff;border-color:var(--amber)}
+.btn-red{background:var(--red);color:#fff;border-color:var(--red)}
+.btn-danger{color:var(--red);border-color:#f7c1c1;background:transparent}
+.btn-danger:hover{background:var(--red-light)}
+.btn-sm{padding:4px 9px;font-size:11.5px}
+.btn .ti{font-size:14px}
+
+/* FORMS */
+.form-row{margin-bottom:13px}
+.form-row-2{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:13px}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:11px;margin-bottom:13px}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--text-2);margin-bottom:4px;text-transform:uppercase;letter-spacing:0.4px}
+.form-input{width:100%;padding:8px 11px;border:1.5px solid var(--border-mid);border-radius:var(--r-sm);font-size:13px;color:var(--text-1);background:var(--white);transition:border-color 0.12s}
+.form-input:focus{outline:none;border-color:var(--navy)}
+select.form-input{cursor:pointer}
+.search-wrap{display:flex;align-items:center;gap:7px;padding:7px 11px;border:1.5px solid var(--border-mid);border-radius:var(--r-sm);background:var(--white)}
+.search-wrap input{border:none;background:transparent;font-size:13px;color:var(--text-1);outline:none;width:200px}
+.search-wrap .ti{font-size:15px;color:var(--text-3)}
+
+/* MODALS */
+.overlay{position:fixed;inset:0;background:rgba(20,25,50,0.45);display:flex;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(2px)}
+.modal{background:var(--white);border-radius:var(--r-lg);padding:24px;width:560px;max-width:96vw;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.18)}
+.modal-lg{width:820px}
+.modal-xl{width:960px}
+.modal-title{font-size:15px;font-weight:600;color:var(--navy);margin-bottom:18px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;margin-top:18px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* LOC BAR */
+.loc-bar-track{height:5px;border-radius:3px;background:#e5e7ef;overflow:hidden;margin-top:7px}
+.loc-bar-fill{height:100%;border-radius:3px;transition:width 0.4s}
+
+/* SPLIT PILLS */
+.split-pills{display:flex;gap:5px;margin-top:6px}
+.split-pill{padding:4px 10px;border-radius:20px;border:1.5px solid var(--border-mid);font-size:11.5px;font-weight:500;cursor:pointer;color:var(--text-2);background:transparent;transition:all 0.1s}
+.split-pill.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+
+/* SUB TABS */
+.sub-tabs{display:flex;gap:4px;margin-bottom:14px}
+.sub-tab{padding:6px 14px;border-radius:20px;border:1.5px solid var(--border-mid);font-size:12px;font-weight:500;cursor:pointer;color:var(--text-2);background:var(--white)}
+.sub-tab.active{background:var(--navy);color:#fff;border-color:var(--navy)}
+.period-selector{display:flex;gap:4px;background:#f0f2fa;border-radius:8px;padding:3px}
+.period-btn{padding:4px 12px;border-radius:6px;border:none;font-size:11.5px;font-weight:500;cursor:pointer;color:var(--text-2);background:transparent;transition:all 0.12s}
+.period-btn.active{background:var(--white);color:var(--navy);box-shadow:0 1px 3px rgba(0,0,0,0.1)}
+
+/* VM TABLE */
+.vm-table{width:100%;border-collapse:collapse;font-size:12.5px}
+.vm-table th{background:#f4f5f8;padding:8px 12px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);border-bottom:1px solid var(--border);text-align:left}
+.vm-table td{padding:8px 12px;border-bottom:1px solid var(--border)}
+.vm-table tr.tr-total td{font-weight:600;background:#f4f5f8}
+.vm-table tr:last-child td{border-bottom:none}
+
+/* INSIGHTS */
+.trend-up{color:#0d6b4a;font-weight:600;font-size:12px;display:flex;align-items:center;gap:3px}
+.trend-down{color:#8a1a1a;font-weight:600;font-size:12px;display:flex;align-items:center;gap:3px}
+.trend-flat{color:var(--text-3);font-weight:600;font-size:12px;display:flex;align-items:center;gap:3px}
+.compare-badge{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:600}
+.compare-up{background:var(--green-light);color:#0d6b4a}
+.compare-down{background:var(--red-light);color:#8a1a1a}
+.compare-flat{background:#f0f2fa;color:var(--text-3)}
+.top-seller-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.top-seller-row:last-child{border-bottom:none}
+.top-seller-rank{width:22px;height:22px;border-radius:50%;background:var(--navy);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.top-seller-rank.gold{background:#c9a227}
+.top-seller-rank.silver{background:#8a9198}
+.top-seller-rank.bronze{background:#a0522d}
+.loc-compare-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px}
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px}
+.mini-bar{flex:1;border-radius:2px 2px 0 0;min-height:3px}
+
+/* CYCLE COUNT — mobile-first */
+.count-session-header{background:var(--navy);color:#fff;border-radius:var(--r-lg);padding:14px 18px;margin-bottom:16px}
+.count-item-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:10px;box-shadow:var(--shadow-sm)}
+.count-item-card.has-disc{border-color:var(--amber);background:#fffdf5}
+.count-item-name{font-weight:600;font-size:14px;margin-bottom:2px}
+.count-item-meta{font-size:11.5px;color:var(--text-3);margin-bottom:10px}
+.count-input-row{display:flex;align-items:center;gap:10px}
+.count-input-big{width:100px;padding:10px 14px;font-size:22px;font-weight:600;border:2px solid var(--border-mid);border-radius:var(--r-md);text-align:center;color:var(--navy)}
+.count-input-big:focus{outline:none;border-color:var(--navy)}
+.count-system-val{font-size:13px;color:var(--text-2)}
+.disc-banner{background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--r-sm);padding:8px 12px;margin-top:8px;font-size:12.5px;color:#7a5000;display:flex;align-items:center;gap:7px}
+.disc-row-ok{color:var(--green);font-weight:600;font-size:12px;margin-top:6px;display:flex;align-items:center;gap:4px}
+
+/* DISCREPANCY REVIEW */
+.disc-review-card{background:var(--white);border:2px solid var(--amber);border-radius:var(--r-lg);padding:14px 16px;margin-bottom:10px}
+.disc-review-item{font-weight:600;font-size:13.5px;margin-bottom:6px}
+.disc-review-row{display:flex;align-items:center;gap:8px;font-size:12.5px;margin-bottom:4px}
+.disc-chip{padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.chip-system{background:#e9ebf8;color:var(--navy)}
+.chip-counted{background:var(--amber-light);color:#7a5000}
+.chip-diff-pos{background:var(--green-light);color:#0d6b4a}
+.chip-diff-neg{background:var(--red-light);color:#8a1a1a}
+
+/* CR STATUS */
+.cr-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border)}
+.cr-row:last-child{border-bottom:none}
+.cr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cr-dot-green{background:var(--green)}
+.cr-dot-red{background:var(--red)}
+.cr-dot-amber{background:var(--amber)}
+
+/* INFO BOX */
+.info-box{background:#f0f2fa;border:1px solid #d8dcf0;border-radius:var(--r-sm);padding:10px 13px;font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:12px}
+.info-box strong{color:var(--navy)}
+.warn-box{background:var(--amber-light);border:1px solid var(--amber);border-radius:var(--r-sm);padding:10px 13px;font-size:12px;color:#7a5000;line-height:1.6;margin-bottom:12px}
+
+/* TOAST */
+.toast{position:fixed;bottom:22px;right:22px;background:var(--navy-dark);color:#fff;padding:10px 16px;border-radius:var(--r-md);font-size:13px;font-weight:500;box-shadow:var(--shadow-md);border-left:3px solid var(--f52);z-index:500;opacity:0;transform:translateY(8px);transition:all 0.2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ITEM IMG */
+.item-img{width:36px;height:36px;border-radius:6px;border:1px solid var(--border);background:#f0f2fa;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;overflow:hidden}
+.item-img img{width:100%;height:100%;object-fit:cover}
+.item-info{display:flex;align-items:center;gap:10px}
+.item-name{font-weight:500;font-size:12.5px}
+.item-brand{font-size:11px;color:var(--text-3)}
+
+/* CHANGE LOG */
+.log-row-added{border-left:3px solid var(--green)}
+.log-row-removed{border-left:3px solid var(--red)}
+.log-row-cycle{border-left:3px solid var(--amber)}
+.log-row-transfer{border-left:3px solid var(--north)}
+.log-row-received{border-left:3px solid var(--f52)}
+
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.hl-low{background:#fffbf0}
+.hl-out{background:#fff8f8}
+.mono{font-family:'DM Mono',monospace;font-size:11.5px}
+
+/* PO BRAND GROUP */
+.po-brand-section{margin-bottom:16px;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
+.po-brand-header{background:var(--navy);color:#fff;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;font-weight:600;font-size:13px}
+.po-brand-body{padding:14px}
+
+.team-member-row{display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border)}
+.team-member-row:last-child{border-bottom:none}
+.cat-chip{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:10.5px;font-weight:600;background:var(--f52-light);color:var(--f52-dark);margin:2px}
+.cat-toggle{padding:5px 11px;border-radius:20px;border:1.5px solid var(--border-mid);font-size:11.5px;font-weight:500;cursor:pointer;background:transparent;color:var(--text-2);transition:all 0.1s}
+.cat-toggle.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.buyer-tag{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;background:#e9ebff;color:var(--navy)}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c8ccdf;border-radius:3px}
+
+@media(max-width:768px){
+  .sidebar{width:54px}
+  .sidebar-logo img,.sidebar-app-name,.nav-item span,.nav-section,.sidebar-footer{display:none}
+  .nav-item{padding:10px 0;justify-content:center}
+  .metrics{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .topbar{flex-wrap:wrap;gap:8px}
+  .loc-tabs{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <img id="pl-logo" src="" alt="The Pickle Lodge">
+    <div class="sidebar-app-name">Lodge Locker</div>
+  </div>
+  <div class="nav-section">Operations</div>
+  <div class="nav-item active" data-tab="dashboard"><i class="ti ti-layout-dashboard"></i><span>Dashboard</span></div>
+  <div class="nav-item" data-tab="inventory"><i class="ti ti-package"></i><span>Inventory</span></div>
+  <div class="nav-item" data-tab="reorder"><i class="ti ti-alert-triangle"></i><span>Reorder Alerts</span></div>
+  <div class="nav-item" data-tab="transfers"><i class="ti ti-arrows-exchange"></i><span>Transfers</span></div>
+  <div class="nav-item" data-tab="adjustments"><i class="ti ti-adjustments"></i><span>Adjustments</span></div>
+  <div class="nav-section">Purchasing</div>
+  <div class="nav-item" data-tab="purchase-orders"><i class="ti ti-file-invoice"></i><span>Purchase Orders</span></div>
+  <div class="nav-item" data-tab="receive"><i class="ti ti-truck-delivery"></i><span>Receive Shipments</span></div>
+  <div class="nav-section">Counting</div>
+  <div class="nav-item" data-tab="cycle-count"><i class="ti ti-clipboard-list"></i><span>Cycle Count</span></div>
+  <div class="nav-item" data-tab="change-log"><i class="ti ti-history"></i><span>Change Log</span></div>
+  <div class="nav-section">Analytics</div>
+  <div class="nav-item" data-tab="insights"><i class="ti ti-chart-line"></i><span>Insights</span></div>
+  <div class="nav-item" data-tab="reports"><i class="ti ti-chart-bar"></i><span>Value Reports</span></div>
+  <div class="nav-section">Team</div>
+  <div class="nav-item" data-tab="team"><i class="ti ti-users"></i><span>Team Members</span></div>
+  <div class="nav-section">Integrations</div>
+  <div class="nav-item" data-tab="courtreserve"><i class="ti ti-refresh"></i><span>CourtReserve Sync</span></div>
+  <div class="sidebar-footer">Lodge Locker v1.3</div>
+</nav>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span class="page-title" id="page-title">Dashboard</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div class="loc-tabs">
+        <button class="loc-tab active" data-loc="all">All Locations</button>
+        <button class="loc-tab" data-loc="f52">Factory 52</button>
+        <button class="loc-tab" data-loc="lunken">Lunken Landing</button>
+        <button class="loc-tab" data-loc="northshore">North Shore</button>
+      </div>
+      <button class="btn btn-primary" onclick="openAddModal()"><i class="ti ti-plus"></i>Add Item</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="tab-panel active" id="tab-dashboard">
+      <div class="metrics" id="dash-metrics"></div>
+      <div class="grid-2">
+        <div><div class="section-hd"><span class="section-title">Low Stock &amp; Out Of Stock</span></div><div class="card" id="dash-alerts"></div></div>
+        <div><div class="section-hd"><span class="section-title">Retail Value By Location</span></div><div id="dash-loc-bars"></div></div>
+      </div>
+    </div>
+
+    <!-- INVENTORY -->
+    <div class="tab-panel" id="tab-inventory">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px;flex-wrap:wrap">
+        <div class="search-wrap"><i class="ti ti-search"></i><input type="text" id="inv-search" placeholder="Search name, SKU, brand…" oninput="renderInventory()"></div>
+        <div style="display:flex;gap:8px">
+          <select class="form-input" style="width:auto" id="cat-filter" onchange="renderInventory()"><option value="">All Categories</option><option>Paddles</option><option>Apparel</option><option>Footwear</option><option>Accessories</option><option>Balls</option><option>Bags</option></select>
+          <select class="form-input" style="width:auto" id="brand-filter" onchange="renderInventory()"><option value="">All Brands</option></select>
+        </div>
+      </div>
+      <div class="card"><table><thead><tr><th>Item</th><th>Category</th><th>Brand</th><th>SKU</th><th style="text-align:center">F52</th><th style="text-align:center">Lunken</th><th style="text-align:center">N.Shore</th><th style="text-align:center">Total</th><th>Cost</th><th>Retail</th><th>Status</th><th></th></tr></thead><tbody id="inv-tbody"></tbody></table></div>
+    </div>
+
+    <!-- REORDER -->
+    <div class="tab-panel" id="tab-reorder">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:13px;flex-wrap:wrap">
+        <div class="info-box" style="margin:0;flex:1"><strong>Reorder Suggestions</strong> — items at or below threshold. "Create PO By Brand" groups each manufacturer into its own purchase order automatically.</div>
+        <div style="display:flex;gap:8px;flex-shrink:0">
+          <button class="btn btn-primary" onclick="createPOByBrand()"><i class="ti ti-building-store"></i>Create POs By Brand</button>
+          <button class="btn btn-amber" onclick="createPOFromReorder()"><i class="ti ti-file-invoice"></i>Single PO All</button>
+          <button class="btn" onclick="exportReorderCSV()"><i class="ti ti-download"></i>Export CSV</button>
+        </div>
+      </div>
+      <div class="card"><table><thead><tr><th>Item</th><th>Brand</th><th>Category</th><th style="text-align:center">F52</th><th style="text-align:center">Lunken</th><th style="text-align:center">N.Shore</th><th style="text-align:center">Threshold</th><th style="text-align:center">Suggest Qty</th><th>Unit Cost</th><th>Est. Cost</th><th>Status</th><th></th></tr></thead><tbody id="reorder-tbody"></tbody></table></div>
+    </div>
+
+    <!-- TRANSFERS -->
+    <div class="tab-panel" id="tab-transfers">
+      <div class="grid-2">
+        <div>
+          <div class="section-hd"><span class="section-title">New Transfer</span></div>
+          <div class="card card-pad">
+            <div class="form-row"><label class="form-label">Item</label><select class="form-input" id="xfer-item"><option value="">Select Item…</option></select></div>
+            <div class="form-row-2">
+              <div><label class="form-label">From</label><select class="form-input" id="xfer-from"><option value="f52">Factory 52</option><option value="lunken">Lunken Landing</option><option value="northshore">North Shore</option></select></div>
+              <div><label class="form-label">To</label><select class="form-input" id="xfer-to"><option value="lunken">Lunken Landing</option><option value="f52">Factory 52</option><option value="northshore">North Shore</option></select></div>
+            </div>
+            <div class="form-row"><label class="form-label">Quantity</label><input type="number" class="form-input" id="xfer-qty" min="1" value="1"></div>
+            <div class="form-row"><label class="form-label">Notes</label><input type="text" class="form-input" id="xfer-notes" placeholder="Optional reason…"></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doTransfer()"><i class="ti ti-arrows-exchange"></i>Submit Transfer</button>
+          </div>
+        </div>
+        <div><div class="section-hd"><span class="section-title">Transfer History</span></div><div class="card"><table><thead><tr><th>Item</th><th>From</th><th>To</th><th>Qty</th><th>Date</th><th>Notes</th></tr></thead><tbody id="xfer-tbody"></tbody></table></div></div>
+      </div>
+    </div>
+
+    <!-- ADJUSTMENTS -->
+    <div class="tab-panel" id="tab-adjustments">
+      <div class="grid-2">
+        <div>
+          <div class="section-hd"><span class="section-title">Manual Adjustment</span></div>
+          <div class="card card-pad">
+            <div class="form-row"><label class="form-label">Your Name</label><input class="form-input" id="adj-user" placeholder="e.g. Jamie Smith"></div>
+            <div class="form-row"><label class="form-label">Item</label><select class="form-input" id="adj-item"><option value="">Select Item…</option></select></div>
+            <div class="form-row"><label class="form-label">Location</label><select class="form-input" id="adj-loc"><option value="f52">Factory 52</option><option value="lunken">Lunken Landing</option><option value="northshore">North Shore</option></select></div>
+            <div class="form-row"><label class="form-label">Type</label><select class="form-input" id="adj-type"><option value="set">Set Quantity To…</option><option value="add">Add To Stock</option><option value="sub">Subtract From Stock</option></select></div>
+            <div class="form-row"><label class="form-label">Quantity</label><input type="number" class="form-input" id="adj-qty" min="0" value="0"></div>
+            <div class="form-row"><label class="form-label">Reason</label><select class="form-input" id="adj-reason"><option>Received Shipment</option><option>Damaged / Defective</option><option>Theft / Shrinkage</option><option>Count Correction</option><option>Promotional Use</option><option>Other</option></select></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="doAdjustment()"><i class="ti ti-check"></i>Apply Adjustment</button>
+          </div>
+        </div>
+        <div><div class="section-hd"><span class="section-title">Recent Adjustments</span></div><div class="card"><table><thead><tr><th>User</th><th>Item</th><th>Location</th><th>Before</th><th>Change</th><th>After</th><th>Reason</th><th>Date</th></tr></thead><tbody id="adj-tbody"></tbody></table></div></div>
+      </div>
+    </div>
+
+    <!-- PURCHASE ORDERS -->
+    <div class="tab-panel" id="tab-purchase-orders">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:13px">
+        <select class="form-input" style="width:auto" id="po-status-filter" onchange="renderPOs()"><option value="">All Statuses</option><option>Draft</option><option>Ordered</option><option>Partial</option><option>Received</option></select>
+        <button class="btn btn-primary" onclick="openNewPOModal()"><i class="ti ti-plus"></i>New Purchase Order</button>
+      </div>
+      <div class="card"><table><thead><tr><th>PO #</th><th>Supplier / Brand</th><th>Assigned To</th><th>Lines</th><th>Units</th><th>Total Cost</th><th>Destinations</th><th>Order Date</th><th>Expected</th><th>Status</th><th></th></tr></thead><tbody id="po-tbody"></tbody></table></div>
+    </div>
+
+    <!-- RECEIVE -->
+    <div class="tab-panel" id="tab-receive">
+      <div class="info-box" style="margin-bottom:14px">Select an open purchase order to receive items into stock. Partial receipts are supported.</div>
+      <div class="grid-2">
+        <div><div class="section-hd"><span class="section-title">Open Purchase Orders</span></div><div class="card" id="open-po-list"></div></div>
+        <div><div class="section-hd"><span class="section-title">Receiving Log</span></div><div class="card"><table><thead><tr><th>PO #</th><th>Item</th><th>Location</th><th>Qty</th><th>Cost Value</th><th>Date</th></tr></thead><tbody id="receive-tbody"></tbody></table></div></div>
+      </div>
+    </div>
+
+    <!-- CYCLE COUNT -->
+    <div class="tab-panel" id="tab-cycle-count">
+      <div id="count-setup" style="max-width:520px;margin:0 auto">
+        <div class="section-hd"><span class="section-title">Start A Cycle Count</span></div>
+        <div class="card card-pad">
+          <div class="form-row"><label class="form-label">Your Name</label><input class="form-input" id="count-user" placeholder="e.g. Jamie Smith"></div>
+          <div class="form-row"><label class="form-label">Location To Count</label>
+            <select class="form-input" id="count-loc">
+              <option value="f52">Factory 52</option>
+              <option value="lunken">Lunken Landing</option>
+              <option value="northshore">North Shore</option>
+            </select>
+          </div>
+          <div class="form-row"><label class="form-label">Filter By Category (optional)</label>
+            <select class="form-input" id="count-cat">
+              <option value="">All Categories</option>
+              <option>Paddles</option><option>Apparel</option><option>Footwear</option><option>Accessories</option><option>Balls</option><option>Bags</option>
+            </select>
+          </div>
+          <div class="info-box" style="margin-top:4px"><strong>How it works:</strong> Enter the physical count for each item. Discrepancies are flagged for your review before anything changes. You approve each adjustment — nothing updates automatically.</div>
+          <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="startCycleCount()"><i class="ti ti-clipboard-list"></i>Start Count Session</button>
+        </div>
+        <div id="count-history-wrap">
+          <div class="section-hd" style="margin-top:8px"><span class="section-title">Recent Count Sessions</span></div>
+          <div class="card"><table><thead><tr><th>Date</th><th>User</th><th>Location</th><th>Items Counted</th><th>Discrepancies</th><th>Status</th></tr></thead><tbody id="count-history-tbody"></tbody></table></div>
+        </div>
+      </div>
+      <div id="count-session" style="display:none;max-width:600px;margin:0 auto">
+        <div class="count-session-header">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div style="font-weight:600;font-size:15px" id="count-session-title">Cycle Count</div>
+              <div style="font-size:12px;opacity:0.75" id="count-session-sub"></div>
+            </div>
+            <button class="btn btn-sm" style="background:rgba(255,255,255,0.15);color:#fff;border-color:rgba(255,255,255,0.3)" onclick="cancelCount()">Cancel</button>
+          </div>
+          <div style="margin-top:10px;display:flex;gap:16px;font-size:12px">
+            <span id="count-progress-text">0 of 0 counted</span>
+            <span id="count-disc-text" style="color:#ffd97d">0 discrepancies</span>
+          </div>
+          <div style="margin-top:6px;background:rgba(255,255,255,0.15);border-radius:3px;height:4px;overflow:hidden"><div id="count-progress-bar" style="height:100%;background:var(--f52);border-radius:3px;transition:width 0.3s;width:0%"></div></div>
+        </div>
+        <div id="count-items-wrap"></div>
+        <div style="position:sticky;bottom:0;background:var(--surface);padding:12px 0;margin-top:8px">
+          <button class="btn btn-primary" style="width:100%;justify-content:center;padding:12px" onclick="showCountReview()"><i class="ti ti-eye"></i>Review &amp; Submit Count</button>
+        </div>
+      </div>
+      <div id="count-review" style="display:none;max-width:660px;margin:0 auto">
+        <div class="section-hd"><span class="section-title">Review Discrepancies Before Saving</span></div>
+        <div id="count-review-no-disc" class="card card-pad" style="display:none;text-align:center;color:var(--text-3)"><i class="ti ti-circle-check" style="font-size:28px;display:block;margin-bottom:8px;color:var(--green)"></i><strong>No discrepancies found!</strong><br>All counts match the system. Submitting will log this count session.</div>
+        <div id="count-review-discs"></div>
+        <div class="modal-footer" style="justify-content:space-between;margin-top:0;border-top:none;padding-top:0">
+          <button class="btn" onclick="backToCount()"><i class="ti ti-arrow-left"></i>Back To Count</button>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-amber" onclick="submitCountPartial()"><i class="ti ti-check"></i>Apply Checked Adjustments</button>
+            <button class="btn btn-primary" onclick="submitCountAll()"><i class="ti ti-check-all"></i>Apply All &amp; Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANGE LOG -->
+    <div class="tab-panel" id="tab-change-log">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <div class="search-wrap"><i class="ti ti-search"></i><input type="text" id="log-search" placeholder="Search user, item, reason…" oninput="renderChangeLog()"></div>
+          <select class="form-input" style="width:auto" id="log-type-filter" onchange="renderChangeLog()"><option value="">All Types</option><option value="adjustment">Adjustment</option><option value="transfer">Transfer</option><option value="cycle">Cycle Count</option><option value="receive">Received PO</option></select>
+          <select class="form-input" style="width:auto" id="log-loc-filter" onchange="renderChangeLog()"><option value="">All Locations</option><option value="f52">Factory 52</option><option value="lunken">Lunken Landing</option><option value="northshore">North Shore</option></select>
+        </div>
+        <button class="btn" onclick="exportChangeLogCSV()"><i class="ti ti-download"></i>Export CSV</button>
+      </div>
+      <div class="card"><table><thead><tr><th>Date &amp; Time</th><th>User</th><th>Type</th><th>Item</th><th>Location</th><th>Before</th><th>Change</th><th>After</th><th>Reason / Notes</th></tr></thead><tbody id="log-tbody"></tbody></table></div>
+    </div>
+
+    <!-- INSIGHTS -->
+    <div class="tab-panel" id="tab-insights">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div class="sub-tabs" id="insights-loc-tabs">
+          <button class="sub-tab active" data-iloc="all">All Locations</button>
+          <button class="sub-tab" data-iloc="f52">Factory 52</button>
+          <button class="sub-tab" data-iloc="lunken">Lunken Landing</button>
+          <button class="sub-tab" data-iloc="northshore">North Shore</button>
+        </div>
+        <div class="period-selector">
+          <button class="period-btn active" data-period="week">Week</button>
+          <button class="period-btn" data-period="month">Month</button>
+          <button class="period-btn" data-period="quarter">Quarter</button>
+        </div>
+      </div>
+      <div class="metrics" id="insights-kpis"></div>
+      <div class="grid-2" style="margin-bottom:16px">
+        <div><div class="section-hd"><span class="section-title" id="top10-title">Top 10 Best Sellers — All Locations</span></div><div class="card card-pad" id="top10-list"></div></div>
+        <div><div class="section-hd"><span class="section-title">Category Performance</span></div><div class="card card-pad" id="cat-performance"></div></div>
+      </div>
+      <div id="loc-compare-section">
+        <div class="section-hd"><span class="section-title">Location Comparison</span></div>
+        <div class="loc-compare-grid" id="loc-compare-cards"></div>
+      </div>
+      <div class="section-hd"><span class="section-title">Category Trends vs. Previous Period</span></div>
+      <div class="card" id="cat-trend-table"></div>
+    </div>
+
+    <!-- REPORTS -->
+    <div class="tab-panel" id="tab-reports">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+        <div class="sub-tabs" id="report-tabs">
+          <button class="sub-tab active" data-view="matrix">Category × Location</button>
+          <button class="sub-tab" data-view="bylocation">By Location</button>
+          <button class="sub-tab" data-view="bycategory">By Category</button>
+          <button class="sub-tab" data-view="lineitems">Line Items</button>
+        </div>
+        <button class="btn" onclick="exportReportCSV()"><i class="ti ti-download"></i>Export CSV</button>
+      </div>
+      <div class="metrics" id="report-metrics"></div>
+      <div id="report-body"></div>
+    </div>
+
+    <!-- TEAM MEMBERS -->
+    <div class="tab-panel" id="tab-team">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+        <div class="info-box" style="margin:0;flex:1"><strong>Buying Assignments</strong> — assign team members to product categories. Lodge Locker auto-assigns the right buyer when creating brand POs and CCs them on emailed orders.</div>
+      </div>
+      <div class="grid-2">
+        <div>
+          <div class="section-hd"><span class="section-title">Team Members</span></div>
+          <div class="card" id="team-tab-list"></div>
+          <div class="section-hd" style="margin-top:16px"><span class="section-title">Category → Buyer Map</span></div>
+          <div class="card card-pad" id="cat-buyer-map"></div>
+        </div>
+        <div>
+          <div class="section-hd"><span class="section-title">Add Team Member</span></div>
+          <div class="card card-pad">
+            <div class="form-row"><label class="form-label">Name</label><input class="form-input" id="tab-tm-name" placeholder="e.g. Jamie Smith"></div>
+            <div class="form-row"><label class="form-label">Email</label><input class="form-input" type="email" id="tab-tm-email" placeholder="jamie@thepicklelodge.com"></div>
+            <div class="form-row"><label class="form-label">Role</label><select class="form-input" id="tab-tm-role"><option>Buyer</option><option>Manager</option><option>Staff</option></select></div>
+            <div class="form-row">
+              <label class="form-label">Categories Responsible For</label>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" id="tab-tm-cat-wrap"></div>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="addTeamMemberTab()"><i class="ti ti-user-plus"></i>Add Team Member</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- COURTRESERVE -->
+    <div class="tab-panel" id="tab-courtreserve">
+      <div class="grid-2">
+        <div>
+          <div class="section-hd"><span class="section-title">Connection Status</span></div>
+          <div class="info-box"><strong>How Sync Works:</strong> Lodge Locker queues changes and pushes them to CourtReserve via API. Each location has its own credentials. Product images pull from CourtReserve once connected.</div>
+          <div class="warn-box"><strong>Why can't I sync yet?</strong> Browser-based apps cannot directly call CourtReserve's API due to CORS security restrictions — CourtReserve's servers would need to whitelist your Netlify URL, which they don't do for arbitrary domains. A small backend proxy (one-day Supabase setup) solves this permanently. The 401 error you saw is actually good news — it means your URL and credentials are reaching CourtReserve's server correctly. The missing piece is the proxy.</div>
+          <div class="card card-pad" id="cr-status-list"></div>
+          <div style="display:flex;gap:8px;margin-top:12px">
+            <button class="btn btn-green" onclick="testAllCR()"><i class="ti ti-wifi"></i>Test Connections</button>
+            <button class="btn btn-primary" onclick="syncAll()"><i class="ti ti-refresh"></i>Push Pending</button>
+          </div>
+        </div>
+        <div>
+          <div class="section-hd"><span class="section-title">Configure Credentials</span></div>
+          <div class="card card-pad">
+            <div class="form-row"><label class="form-label">Location</label><select class="form-input" id="cr-loc" onchange="loadCRConfig()"><option value="f52">Factory 52</option><option value="lunken">Lunken Landing</option><option value="northshore">North Shore</option></select></div>
+            <div class="form-row"><label class="form-label">CourtReserve Org ID</label><input class="form-input" id="cr-org-id" placeholder="e.g. 12345"></div>
+            <div class="form-row"><label class="form-label">API Key</label><input class="form-input" type="password" id="cr-api-key" placeholder="Paste API key…"></div>
+            <div class="form-row"><label class="form-label">API Base URL</label><input class="form-input" id="cr-base-url" placeholder="https://app.courtreserve.com/api/v1"></div>
+            <div class="form-row"><label class="form-label">Image Sync</label><select class="form-input" id="cr-img-sync"><option>Pull From CourtReserve On Connect</option><option>Manual Sync Only</option></select></div>
+            <div class="form-row"><label class="form-label">Inventory Sync</label><select class="form-input" id="cr-sync-freq"><option>On Every Adjustment</option><option>Manually Only</option><option>Every Hour</option></select></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="saveCRConfig()"><i class="ti ti-device-floppy"></i>Save Credentials</button>
+          </div>
+          <div style="margin-top:14px"><div class="section-hd"><span class="section-title">Sync Log</span></div><div class="card card-pad" id="sync-log" style="max-height:220px;overflow-y:auto"><div style="color:var(--text-3);font-size:12px;text-align:center;padding:14px">No sync activity yet</div></div></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- ITEM MODAL -->
+<div class="overlay" id="item-modal" style="display:none" onclick="if(event.target===this)closeModal('item-modal')">
+  <div class="modal">
+    <div class="modal-title" id="item-modal-title">Add New Item</div>
+    <div class="form-row-2"><div><label class="form-label">Item Name</label><input class="form-input" id="f-name" placeholder="e.g. Selkirk AMPED Epic"></div><div><label class="form-label">SKU</label><input class="form-input" id="f-sku" placeholder="e.g. SK-EP-001"></div></div>
+    <div class="form-row-2"><div><label class="form-label">Category</label><select class="form-input" id="f-cat"><option>Paddles</option><option>Apparel</option><option>Footwear</option><option>Accessories</option><option>Balls</option><option>Bags</option></select></div><div><label class="form-label">Brand / Manufacturer</label><input class="form-input" id="f-brand" placeholder="e.g. Selkirk"></div></div>
+    <div class="form-row-2"><div><label class="form-label">Unit Cost ($)</label><input class="form-input" type="number" id="f-cost" placeholder="0.00" step="0.01"></div><div><label class="form-label">Retail Price ($)</label><input class="form-input" type="number" id="f-retail" placeholder="0.00" step="0.01"></div></div>
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);margin-bottom:9px">Stock By Location</div>
+    <div class="form-row-3"><div><label class="form-label">Factory 52</label><input class="form-input" type="number" id="f-f52" placeholder="0" min="0"></div><div><label class="form-label">Lunken Landing</label><input class="form-input" type="number" id="f-lunken" placeholder="0" min="0"></div><div><label class="form-label">North Shore</label><input class="form-input" type="number" id="f-northshore" placeholder="0" min="0"></div></div>
+    <div class="form-row-2"><div><label class="form-label">Low Stock Threshold</label><input class="form-input" type="number" id="f-threshold" placeholder="3" min="0"></div><div><label class="form-label">Reorder Quantity</label><input class="form-input" type="number" id="f-reorder-qty" placeholder="6" min="0"></div></div>
+    <div class="form-row-2"><div><label class="form-label">CourtReserve Product ID</label><input class="form-input" id="f-cr-id" placeholder="Optional"></div><div><label class="form-label">Image URL</label><input class="form-input" id="f-img-url" placeholder="https://… or auto from CR"></div></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('item-modal')">Cancel</button><button class="btn btn-primary" onclick="saveItem()">Save Item</button></div>
+  </div>
+</div>
+
+<!-- PO MODAL -->
+<div class="overlay" id="po-modal" style="display:none" onclick="if(event.target===this)closeModal('po-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-title" id="po-modal-title">New Purchase Order</div>
+    <div class="form-row-3">
+      <div><label class="form-label">Supplier / Brand</label><input class="form-input" id="po-supplier" placeholder="e.g. Selkirk Sport"></div>
+      <div><label class="form-label">Order Date</label><input class="form-input" type="date" id="po-date"></div>
+      <div><label class="form-label">Expected Arrival</label><input class="form-input" type="date" id="po-expected"></div>
+    </div>
+    <div class="form-row-3">
+      <div><label class="form-label">Supplier Email</label><input class="form-input" type="email" id="po-supplier-email" placeholder="orders@supplier.com"></div>
+      <div><label class="form-label">Assigned Buyer</label><select class="form-input" id="po-assignee" onchange="onAssigneeChange()"><option value="">Unassigned</option></select></div>
+      <div><label class="form-label">Buyer Email (CC)</label><input class="form-input" type="email" id="po-buyer-email" placeholder="auto-filled from team"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Notes</label><input class="form-input" id="po-notes" placeholder="Optional PO notes…"></div>
+    <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);margin-bottom:8px">Line Items</div>
+    <div id="po-lines-wrap"></div>
+    <button class="btn btn-sm" style="margin-top:6px" onclick="addPOLine()"><i class="ti ti-plus"></i>Add Line</button>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
+      <div style="font-size:13px;color:var(--text-2)">Total: <strong id="po-total-display" style="color:var(--navy)">$0.00</strong></div>
+      <div style="display:flex;gap:8px">
+        <button class="btn" onclick="closeModal('po-modal')">Cancel</button>
+        <button class="btn" onclick="savePO('Draft')"><i class="ti ti-device-floppy"></i>Save Draft</button>
+        <button class="btn btn-primary" onclick="savePO('Ordered')"><i class="ti ti-send"></i>Mark As Ordered</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- EMAIL PO MODAL -->
+<div class="overlay" id="email-po-modal" style="display:none" onclick="if(event.target===this)closeModal('email-po-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-title">Email Purchase Order</div>
+    <div id="email-po-preview-header" style="background:#f4f5f8;border-radius:var(--r-md);padding:14px 16px;margin-bottom:14px;font-size:12.5px;line-height:1.7"></div>
+    <div class="form-row-2">
+      <div><label class="form-label">To — Supplier</label><input class="form-input" type="email" id="email-to" placeholder="orders@supplier.com"></div>
+      <div><label class="form-label">CC — Buyer</label><input class="form-input" type="email" id="email-cc" placeholder="buyer@thepicklelodge.com"></div>
+    </div>
+    <div class="form-row"><label class="form-label">Subject</label><input class="form-input" id="email-subject"></div>
+    <div class="form-row"><label class="form-label">Message</label><textarea class="form-input" id="email-body" rows="9" style="resize:vertical;font-size:12px;font-family:monospace"></textarea></div>
+    <div style="background:#f0f2fa;border:1px solid #d8dcf0;border-radius:var(--r-sm);padding:10px 13px;font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:4px">
+      <strong style="color:var(--navy)">💡 How email works:</strong> Click <em>Open In Mail App</em> to launch Outlook, Apple Mail, or your default email client with everything pre-filled — just hit Send. Gmail users: click <em>Copy Email Body</em> then paste into a new Gmail compose window.
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('email-po-modal')">Cancel</button>
+      <button class="btn" onclick="copyPOEmailBody()"><i class="ti ti-copy"></i>Copy Body</button>
+      <button class="btn btn-primary" onclick="openMailto()"><i class="ti ti-mail"></i>Open In Mail App</button>
+    </div>
+  </div>
+</div>
+
+<!-- TEAM MEMBERS MODAL -->
+<div class="overlay" id="team-modal" style="display:none" onclick="if(event.target===this)closeModal('team-modal')">
+  <div class="modal">
+    <div class="modal-title">Team Members &amp; Buying Assignments</div>
+    <div class="info-box">Assign team members to product categories. Lodge Locker auto-assigns the right buyer when creating POs by brand, and CCs them on emailed orders.</div>
+    <div id="team-list-wrap" style="margin-bottom:14px"></div>
+    <div style="border:1.5px solid var(--border-mid);border-radius:var(--r-md);padding:14px">
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3);margin-bottom:10px">Add Team Member</div>
+      <div class="form-row-2">
+        <div><label class="form-label">Name</label><input class="form-input" id="tm-name" placeholder="e.g. Jamie Smith"></div>
+        <div><label class="form-label">Email</label><input class="form-input" type="email" id="tm-email" placeholder="jamie@thepicklelodge.com"></div>
+      </div>
+      <div class="form-row">
+        <label class="form-label">Categories Responsible For</label>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" id="tm-cat-wrap"></div>
+      </div>
+      <div class="form-row"><label class="form-label">Role</label>
+        <select class="form-input" id="tm-role"><option>Buyer</option><option>Manager</option><option>Staff</option></select>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:4px" onclick="addTeamMember()"><i class="ti ti-user-plus"></i>Add Team Member</button>
+    </div>
+    <div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('team-modal')">Done</button></div>
+  </div>
+</div>
+
+<!-- RECEIVE MODAL -->
+<div class="overlay" id="receive-modal" style="display:none" onclick="if(event.target===this)closeModal('receive-modal')">
+  <div class="modal modal-lg">
+    <div class="modal-title" id="receive-modal-title">Receive Shipment</div>
+    <div id="receive-modal-info" style="font-size:12px;color:var(--text-2);margin-bottom:14px"></div>
+    <div id="receive-lines-wrap"></div>
+    <div class="form-row" style="margin-top:12px"><label class="form-label">Received By</label><input class="form-input" id="receive-user" placeholder="Your name…"></div>
+    <div class="modal-footer"><button class="btn" onclick="closeModal('receive-modal')">Cancel</button><button class="btn btn-primary" onclick="confirmReceive()"><i class="ti ti-truck-delivery"></i>Receive Into Stock</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script>
+// LOGO
+document.getElementById("pl-logo").src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAC0CAYAAADl5PURAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAACDDUlEQVR42u1dd3gUVdf/3ZnZml4JhBJAegfpHelgA6WpgBVpigWQIvUFXl9FEVQ+UBRFRIqCdBCpUgWRKgQCBEhCSG/bZ873x+Yum5DdbAoQdM/z7EPYMjP33nN/9/TD4CUveUhMABhjAAiKfNenkDQi/MPV8C+vQmBF9Yv+FaShfhHqTj5hEvSBgMZXDVEnQFIrEFUKmCDYf6oAso1BthJkA4Mp2wpDOsGQIiP7lvFYerztm4yb1qUZ8VYlK9ECi8l217MJIgMAEBFI8a6Vlzzkae8UeMk96DEwBigKAXTnfVESEVxJi7Ca2tYRdXTLwh5R1wmorII+VIDGV4SkAiASCARS7KBECgEKgQCQwkCc/ZidERkDIOTeU7ADrgAGUgDZymDJkWFIVpB+04KUS9brty4YX70dbdqZds0Cq9WaDxABInjB0EteAPRSMUFPBu6gnoiQylpUauLzQuUW+u/K19cioLIAtZ8IJgCyrECxEmSbYv+dwnJ/mxfkCAxg5MR4dIcVyekduvM55T6TIACCikFUMYgiAxFgyQIybtpw66wZN/7IGnHjT8PSpKsmu1iZe11BYrkgTN7F9ZIXAL1UMCcIAsujQgoQEVFPj+odfbdXa+PTI6y2GtpAAQDBZlFgsxAUG4c1Zpfe7iVX0R1wJCKH6iupAUkjAgAsGYTbFy24eshw6PK+rLYJ53Kg5OrrXIXPL816yQuAXvq3MgCzS1eKfEcSC62qR52ufuse6erfv1wdDVQ+BJuVYDXJUGz279jB5ME/P1dzSbFLlYIKkHQCJBWDzSDg9gUzon/L2Xbx17TeSTFGh1QqiPbfkBcIvQDoJS/wqbUqPNLRv3XDJwIOVWylhTZIgM1MsBoVKDZy/MZJowUT2IPjIAIUIohqBknFAGZXcxUbwWa2O2kEkaDyEaHSiDCly7hxxIwzv6S1urw386jFbHNIkF6J0AuAXvoXAZ8gCJBlu57rG6pBwydDVjZ42ndIWE01FEawZCtQLARFAFQagkotQlDZ9VtGDMQAIgU2I0G2KPdfFCRAUgGiVkJWnIzMBCtkqwKVToBPiAR9mAC1nkGWAbPBBsUsQ1BJUPuKEAEkXbTi1IbM5Wc3pL6YnWL2SoReAPTSv2GlBSeJL7CCFk0HhUbXe9q/RmCkAItRgdWggBRA0jGo9QwgEYZkK1KvyEiOMSMz3rbNmo3LghZhIdWkQZWa6+EbzuxOj/vFSQQIEsGYwrD/05Shl/dlrMhJs3uABQBafwmBlTWIbKibXqWtfkalpnr4hTNYLARzlh301b4Mao2IzDgZZ37KOvfn6pT66beMdyRC2YuCXgD00j+G7Jvajh5+YRq0eCH8aoNn/aJ8ywmwZCuwmRQwMKh8GVQaEZnxMq4dMuDS7ux2N//KPpiZaMEdr+od6j6lsqX5S34qY5rsiMO75/inAGo9cOuUgm8GXbT7XASWxzHiTIEROtTsGvhR/Sf83olopAZAMGfKUIhBpSNofCRkJRBOrUk/9ceKpMbZqRa7RCjkhv54yQuAXnp41V0wO2iodCo0Hxz6bfPhQUP9KwowZdsgm+0eXLUPg6gWkHhaxqmf0uf+vTNjSnaSCc6GMUG0swsTAcVKCK3qi6Grq5CglkHyfbYFKgq0fipsfDdpyOmNiaskFYPNSg6OZszu7bU7SOzvi4KIRzoF1Hx0aOjFqNZqyLICS44CAiBpAI2vhIzrCo59k/Lpnz+mjrOarWB2h7dXLfYCoJcetmW1S312qa1O15DG7d8IOxleT4Ilxwabxa4wSioZal8Vbp+14shXqf3PbU/7WbbmOgdyHRzOdjGuHqr1EoZ8U40qNJJgyiHwhI77RkQQJMBqlLD6xVgWfz4LgiSCZOUuKZAxAUxArlpr9wDX6RbUuN3o8JPlGkgwZcoOlVfSAGofCYmnbNj36e2o6L2psQAginZ7otdT4gVAL5V5qY+BgUEhBcFVdOjyVgWq2VsHsiowGxUwgYEUBTo/AeZMEQeXJH93fEXKMKvZCpfOACf7oT5Qjf4LKlGltjqYMmz3TfUtSBWWtIA1XcDGSfHhl/enJfHnd+XVtUt09lhHlVZE65cj9rV5NbgD1DZYDHCovRofQGAqnNuShb3zE1l6vPFOjKQXA70A6KWySYIo5Ep9Ah4dXG5mhzdDpulDCcZ02aEWKgpBFyQh9pAF22fGsaTLOXd+q+Cu3DH7Ne3SU2RDf/SdW5FCawkwPkDwuwOCBEEtQBIEHF+RmXXo/xL9c9LNDmnVWQXOO6Y7jo5KjQPRZ055CqmZOyZJBMkEYgp0/hKyE4EDnySN/XPd7c/y/9ZLXgD0UpkBP/vGDKygQ7f3y1Pt7jqYsmXI1juFAhSFoA9U4cR3mdg5J47JNlvBcXD5PMZqnQptXgo70OLV4HaCWoHFoDxw8HOWBEkg+PhJSL8GHPsheemZ9akjDGmWPGNxK9UG6dBvfkWq0lEDU7oVTBBhL/hAkNQMah8RF7cYsWNOPMtMNNqlTNnLc14A9NKDX0AnD2id7mGtu08LPeRXToAhw76RWa5/QlEI2gAJhxaln9nzaVxDu21MyQU5lhsYbWcJbjsUVSLq9woe2OrVkB/D6okwZdodHkwoe/NAsgJJK0CtE5F23YYLW3Nund2UUf7Whcw8c8VYbvYI2UGfS80avQrPfF6VKrWUYDXSnTESIJMCfaCE7BuEbTMToqL3pMUydqf6jJe8AOilBwR+pBAEQUDndyLjWr0SUMFqkWEzEQTJaWllgjZAhdM/Z2LjxOtMVNt/x6U+u+p7ZyP7hGpRp7vflCb9g/9TrpEKVos9RlB4kJkfnoBgrsqr0jCo9AIsWQzxf5pwYXvm+Ev7Mz/KuGVyvQsIiGzgjxdWVyaryQaWL7hblgG1liCJKhz6v9RTexYmNAaRYw28DhIvAHrpPi6bXQ0j+IZo8cQHFan6Y1oYU60ABEBgjg1JBEgqQk4SsKTnFWa1WAq8nl+4BpUa+bZ8pIvPkSptfRAQKcBmkWExkMN++LAQl/AEAVD5CBBECYZbNtz4w4iYg9mj404av0iLM8FqtOuxar2IKq38q3V+KywmMEqAbC04uUUhgMFuQ72004jN791kOWlmr13QC4Beup9LJkoCZJuC8nV98fQnFSmoughjmi2v1Ic7KhwTAZtRQexRKxJOGZfnJFnWQ4DkEyh1CaysHR1aQ42Qahroy9mx02KQYbOQ3aMsPNyzxW1/oppBrRMAAbBkAjmJMgypBMgK9OEiAqpIIEWB1USFZvYpNoI+SEJytIINb8WyWxdzIEjMkTPtJS8AeukekSAJUGwKanQOqfbk/8rHqHwUmHOUgsGPLzIBEAG1D7NXYc6t1UcC2cNCrASbRbYHExNz2Mr+UUS54TGMIAgMotoeKwlGkK0Msjm34IOHgK/YCGo/AZYMERvfjY+4fCAl0QuCXgD00j1bKZbrtVTQ6OnwYX3+E77cJsuQLQTmoUfWZXwcY3kqvfzTieDwhIA7gOynRNEmgGSCqGEQmIStUxKHnP7l9ipRFCHLXhfxw0KidwoeEslPBBSZoeXQ8p/1nB0212K2QbExj8HPAXRCAa9/EfjxU5/bNe+MvegTwAQu8Smo19u3vyFdkOJOZe2xxyB6ZQsvAHqpdCQ/yR6M3PbliJXdpoS+bMy25qqq3ul58MvDAIXBalVQt4d/BzlLeuT6n1nrBUn09iPxAqCXSiz55dqV2rwcuarrpJDBOVnWO2qbl8qOSAkGi8WG2l39G1qyWeUbJ7I28mwUL3kB0EvF2FV2hwehxXMR/+36ftjrhgzrHbXNS2VNUAcjBotZRq2uPk0MSYISdzp7vygJ9vgZL3kB0EtFkfzs4NfgiXIDe88NXWDKsoIxweu2KuOSIAOD1SKjVne/zunXcObWhey/Ra8kWLaFdy+VMfDLDayt1jZQO3BJJaPNZoOi0EMVjPxvJiJ7Kp0kqbDutRs+lw+lG+4UqvCSFwC95HpBclOrwh/R44WVUSTqCbIFXofHwwaCCiCqCbJBxIrnb7Dbl7K8VabLorDhnYIyBH65GWz6QDX6f1qFVP6AbCYv+D2UBxkgmwFVAKH/gkjyDVKDCF77rRcAveRSFhfsQbp950ZScG0RlmylSHF+XipjSyoyWLIUBNcW0GdORXvYteDVu7wA6KW7F0IQQDLQYVSFA7V7+cKUanWb3ualh2RdJQZjqg01e+nQcWTkAUXObTfgpTIjd3jpgYOfvShp9XbBgYO+ikwzGSwQwED3U1+iO/941bR7ML1E0OpU+PGVGz4xB9MNd8poeckrAf6bT6DcXhO+IVr0ml0uzWaz5jYfvw8oRPZ8VkUhQCAIKkBUAWAERcmtE/iPQaDc6tH8db+xhxisig29Z1fI8Q3R2qv0eE8aLwD+6wGQAUQiuk2qQAGVRVhMyK3nd2/BQJEJogRogyTo/UTApoIxVYExFWCyBH2ACLUeD3+du9yxQgBUegaNrwC1rwBJY/9Qkem+pKwxAbAZFARUIXSfXIGIvJ79skCSdwoe4OmTW9S0ft+QJ+o+7QtTmhmieA93BSMoMoMoEfQBErLiFFxen40rBzIb3b5kPG1Mt4EY4BusRqVm+jGNBwYvKt9IBXsQtoiHreoxKQRBBPQBIoypwO3LVhgzbBAlwDdMDf8KErRBDDazDKtBzq14ze7ZKAUVgyFNQd2n9IjeG/bU2U23N9hDY7x74YEJIN4peHCSHwD4hGjw0s/VSRekwGa9t2luikzQ+YkwZQDHv0vd/+ePaR2zks0ugU1UqdDlnQrZLV7y9TFlyfb+Iw8R+EkaBtko4Ng3abvPbk1/LP26GUou2qi0KgRHaVC9ve+qBo8HDgqrK8JstEEx45563okAQQVY0oBl/a+wnGQLAG+7TS8A/uukP3u2R985UdRkkC9y0mQI4r1bZllW4BMo4sYRK7ZNj2e3Y7Idz2HfmE61AnntwVx72ZP/rUL1++tgyiCwhyB5kggQVQzmNIa1o2+w+DOZjnlw7g3MB6zSSmjSL3hm61Gh03zCGYyZMsTSBEHKu9vsnehEnPoxG5umxDJBEBzA7CUvAP7zwS/X61u1ZRCGLK9IRqMFwj1UMUm2l3D/a002tk67wWSrbO+bq7iXPITcPH6/cB1e2VCdJL0Mkss+1xAR1FoJa16J84k5lGYQVfaKOvnbYjp6JefaOYMideg9syJV7ayBId0KQSgFc0RuSwImADYz3TlwFILGR4VVw26wq0fTHTzhpfu8F71T8AA2KABREtHpnXKkMBmMBAf4kcL/LPlmYLC3i9QFSTi5MgebJl1nik2xF/KUC1e7FIVBEERkJZoQeygHar0IpYzraiQDWj8BMXsMiDmUbhBEBtlawFhzvcKKTAADRElAWpwRq0ZcYad/zIZPoORoGVqiNZAAcxZgTAL0gaITyDEQZHR6N4wElQgCecOPvAD471B9SSE0fDr0jYqPSjBnK2DCnU5mGj9WamomyQo0ASKu/GbClhnXmSDY1T7P48/s1Y7BCAkXzD8KAsq8rYpAYIKA6F1Zw+1l7j0bpmzLXQdFwcYpsez0GgN8AiWQrfiqqSITNL4i/v4l69bXz1xhp9fkQO+nApECxgBztoyKzTRo/GTYOFLwUNlYvQDopWKIAwykAFo/FVq/FvypxWCzM71iD0lRqVW4us8C2cCAEnqDiQCmZciJBzZPvclIkUEoJoARYMmwHn0YbCZMAGwmQuo187egoo2XlFzVWAA2T7vBrh+xQO1vz9ApNskM8WeNg3JSzdg4+Rrb/d+U7zW+WhDskrjFYEOr14M+0fppQIq31qMXAP/Jk50rQTUbGLoqpLoEqynXEK8mKFYRm8bf6rrq1cvs8m850OgZlBJsPFIIGq2EfQuSX8q8bXJInsUltU6s+VBYjBlAMoPFrDhJsUWbNwCQrTZsnnqTWbIECCoqlkWCMUCWCYYM2wHG7K05D32d8ML+T5J36AM0gAJYTUBIdQFNBwavJFK8UqAXAP+xwh8UheATqEaz5wMGmXJsEJgAJhAk0mDD2PiAc9uSfmMMuHI0qxcDQ3HtgKQAah8BCacsOLsp5Rtu8ysJBVRRjaSHIVZDAQQJ0PgIdxCxGIeHIApIuWbAsa/Sdmj9xGI7KBgDBAm+RAApDKIE/L44vueZdVnQBUogAsw5Cpo9FzhEH6jOrfvo3S9eAPynAaDAAAIaPxu0KrCyCNkMKETQ+arx69zbUy8fSs2UNPbKweZs4TLJxa/+TERQqQWcXp/5gc0ml2hDKYq9UENkPR1s1rK/OYkAScMQUlX3Nvf0Fu8Qsdvpjv+Y2DP9pmLPHKGiP4sgMvgEqXrwNxSZwBhh23/iWMolG9R6EVYDIbCKiMb9Q1fyvsxe8gLgPwj97NKf1k+FJgOCBpkNduOUPkDC39sMOPFj4hxBZFBs9q9LagphTCm2I1iQAGMaQ8yBrPeA4pdjt29EQrk6vgivo4bV+HCoaAoRKrfQzS+qDTA/eDGBwZhuQ/TOHGj0xZMCmUAIqqx5mzOC/boCzFkW7Jyd6COK9phLk9GGJoMChmh81SCFeQPUvAD4D5rkXOmvbu+gt4OqqWAxKhDVDIZUYNcHiYyxvBvVL1x8urieYFIAUcOQesOMtBsGFM3re7f6BmJoMiCYRB+UzBlwH+faYpBRtbUOvqFae3n6YoOJPUTm8r7MANlWdGmSwW4DDK+lbQUI4CYERVYgiAwxh9IM5zfmQBskwJoNBFeTUK9nwBgixVsyywuA/xwihSBKIho/GzjfarECBGj8JBz7Nu3X9JvZuFMayb5BQh7RTqQS7FlRYsi6ZQMpxa8mzQR7GEd4TR/Uf8IXpizZEcRb1qVt2QL4lpfQqH/wBlDxw0t4TGbyZXOmMd0uWRdJKhcYZLOCsNoqqH0E+xqzO2YKMODA54nMkm6vwmO1yGj8bNAiURK9pbK8APgP0X5zO4JVbenvX76BFpYcgkrHkH7NihMrk7ozdsfzyO1tEbW1sFnlYpZLsks8NjMVW41iDGCCCMZEdJtSniS9XCKP9P2XAgFTthUthgY/GRChg6IUr/IKhyBThg2mDBmCKBQJ//g6BFaQEFnP545UnQuugiAgJdaEM79kQx8gwpIlI6KRBlUe9RO4/dBLXgB8yMU/+z8N+wdkQLSnkql9JPy1OuMXY4bFUQ+Q5SaDBEZqEFJdgq24vUCYPYdXHyDa711UQYLZQVuxyeg8rvyFqu3UMGYrEB4mTsmVAvXhhG6TKxB4L45iO5WA4nrAiQBBAzzSyTfBvjws74eMcPz7VGbOFMAEBkGyoeHT/jL/2EteAHx4pT/BHvgcEOGDqm31sGQrELVAzi0Zp9anPWUPjKZcqcW+FFWa+72mDRKhWIsvvdksCkKqaqHz1wDwPLiWCblFEGyEls9HfNR6VGAtY7oMUXj42EQQGYwZMur01qP9iApbFRmQRLFIdjz+Va2fCL2fPTWOFZkHAKtJQbXOfhFqrQRFviMF8pCX5CvZuHowG1p/EcYsQlR7X/iFa+0mDK8Q6AXAhxYAmV0ErN3N72N9mACbCdD4iri8OxtZt80QnJwf9mIgDDW6+i1RFAWs2PqrvZOcX0WgZteAF4nsMW2F/YYHSisy0H5Ehc1dp4W9Y8q2PdRVi5nIYMw0o/27wb0efS5its0m52Z6MA/By+6NjainraQPYZBtRTcrMMZgMxFCHpFQrZ1/fYDy3J8xuxR4bnNmOzARioXgW05Ajc5+4xzP4CUvAD6U2q9CYGCo2c3vLZtFARMJipXh3JZMFdidzcRzUIMq6VCluQ7WHKVE1YIZE2A1yWg3JuRr/3AtZJsCQWVXsZjAbXx20BNEASB7oLRfuBb95kdRhwnBfUzZ9tL8D3M4hv3RRViyrOgxPXRqx9EVD5IiOAKd3WE7Y8zhBW86MOi6PTKl+JPBiND42eAzdm/wnfcVxX6Pq0eyD2bF2SBp7HnJtXv4f8IgeJ0hXgB8WNVfu3QXWl2H8g1UsBjszo+0q1bc+DPb5ijV7mQXqt8ncKummJJGfslTNgP+FRgG/V8VKlfDF4pVsZe/yu2HwSuhKDJBH6hBy6HlF764thrVfVIHY7rNvtn/CcIHs7caNWVb0fGtwDaDFlejkKp6KLLi6NNrPwgYBBG5L7tdVrYRWjxX7r+PdPaFOctaIo+6KVtGVDstKjX2y+udzy2Nb0y3IuGMESq9vR1qZCMtgqto4S2df2/JWxL/nqm/DARC9Q4BX2oCBGQlWaELkHD9DwOsZpujICpyvcAavQoNngrsZeUFEkoBgC3ZCoLrCHh+ZRSd3ZiJy3uy/NJvGrMVC0HtKyGkqrZl5db6I4908ENAlASrwQpDOiCKDPSPWgs7Eman21C9qxqRTavTyTVpV07/lFI9+ZoJJN9dK0utk9B6eLk9bcYEdTIZrGAltYMqDKJKQavXQunGqEzGGAMxe6S2wBhkKIg7bfmpVh/f/rLNBl0YQ9W2/jNTYg3TOS95yQuAD5X6CwDV2+leka2KXcojAdf/yHk8jwiem6dbr2/w2yE1BOSk2Uot/IGJDFYDIGhsePRFfzR73i/LmkNQrARRK0DtQ4DAYDHKMKbZPdKCiH/oVrOPzZhBELVWtB0VWK3poCCKP2nAjZOGbanXzPOsBuWyxk9qVq6O7svqnXwjwmoJMGXZgFIwBTARMGUpqNnFB4+0Dwy5fCAtRRAFe13G3O8kX8p5U7EF9bcXaVXwSHufacd/YNPhLRbtBcCHTvojgn+EFuXqaWA1KRAlwJxNSL5o2gzkOj9ynSBqvQothwfPt5hKv++GPaCZwZRmtUtCogBBYlAUGcZMu/0JucD3r7D5iPZqMYY0G5gKiOqkQfWu2l6koBfJzN4PhBGsJhnGdDn3/6V3f1mxocv48OTrf2Qxq0XO5QE7BGanyHGKWQCTCFYjIaKBFr6hamQnm5E/W8hLpcQP3im4F7Nq3zGVmvh01IVKUCz2jmDGVBsybtnjW4gIQm4GSPPnQ9aE1pZgNd6bsAfGACYKufW4kKvy2ZPumfgvbISeG+sIhcGcRchJlWFIl2HKtsGQboUhzQbbPWiOZK//p6BcPRU6vlUhm3etc2jJNoDHLMoWgk84Q2QjfU1+kHnJC4APyf6yH9WVWuj3CkwB5aqjpiwF5hxLruprV39CqujR+tXQZ41ZtvuX/+mNrLgDhMIdJ4jdBJD79z2aI0FkyEmX0eJFP5/6j4f0VmyAmOuh1wUKENQKoNhzx5kEVGruc9C7aF4AfKhIkQmCIKBCfT2sllyPLrM3vbFXHWa5m0FEr1mRpA5QQFby8vi/xkQCWAwK+vynwpZanYMfsZllkEKo0tz3uKi6U4lGtiio2FAbypjg7R3sBcCHh7kBwL+8BkFVJMi5KW0kK9D7SdD6qBx14Xq8V4mqtNPCnCmDSV70+zfxiCIDCmzotyjyUvPny80Jr+mLRs8GNDPnNmi35xEDQVVV8Au384w3K8QLgGWfuXNnNLyW7hFtIIMsExhjkM0E/4oiIhv7hoiShN4zKlPTF33tzglRgDfK4d/HJ4oMWG02dJsaOvmFH6JIE0iQrbnaLrMHROuDJJSroQu071YvApY2eb3Apc/aAAgRdTRLmER2L2vusa/IMrpOCk+2GMNQoYnKHnAsemfsgRIRCMyeknafbRCMAVAAc44MQQJkaz7bIwGCWkF4He3iS79jcPGbJHjJKwHet/1kZ9FyNbVdFOXOlmIMsJqBgCoCwusJMKTxkJd/0alOuaqfTI56eDwMxJ6Vcn93uCITIAGSlqDQA1oHxotm3O14YbCnyoXX0A9y5i0veSXAMiv8kQIIooCAKAmKRcmDb/ZKLfYOY8K/SPIjIpDCIGkYNDoGBgE2E8FmsVv21WoRotbe09diVKCYFXvmxT3CJFLs99IFSchJVJCZLCOouv2ZHli4CStYRFSsMoKqifbYUm9esBcAy77yC/iEqOAXpoLCM0Dyqz3/IqFPUQhqFaDSS0i/YcOFgwbEHs8eknLVssqYaQWIQRcgISRKM7hSc58fqrbTIrCSBLPBBtkslK6JgOwSlUoHiGoVruw2YNcHt5g5m/Dyz1Ek+QGKtezERTJmV4t9y0nQBalhSLWAMfIGRN/jc8dLxZ3M3MDmCg18MXRVFNms1n+1lUGRCboAAVnxDH98nbr09MbUETlpZre/8QlWo9GTId88+lLwcN8IgilDKZXUQEUGBImg9ZeQGi3jwKLkx89sSd7Mt0CDJ8IGPvlJ+I+GNEvh5cPus91AFER8NyiWJfydnVs5yLvXSou8NsBSPrEBIKCCqpmkAWTl33u+kEzwCRJxaZcZywdeYYe/TRiRk2Z2VFsReGkuAU4ByEBOqgWHvkl48duBV9nVXVbog0QocvF3PCm5HfkCGARFxKHPMq58PSCGndmStNle30ABExSc2Xh79fmNBuiCpBL3UC5dCRqQtAL8ItTV7DzmlVm8AFjGKSBC+zITAPYvVVUUmaAPEvHnyhysGXmVZd4yQZTsNj3uBOFB4fbXHScIY/amThnxBvw48gr7a5UB+iBV0UGJAMVGkHQMOj8VYnaZsWJwLNv98c3qpkwrREmAohCioqKg0WggCMCuefEsO85uqywz7tbcjBC/8uJA787yAuBDYVHwCRcfp3+pdUFRCPoAERe2mLFlWixjzO5YkG2e9TkmAmRbbtVkQcbmqTfYxe0m6AIEj0GQZAITCPoQFTJiZWx4I67d6pHXWMLFbNgrMtuBV61R47fffqPRo8aQohAybxuxa+6tTmqdCkpZMrQxgl+46lnv/vICYFlX/OwAGCJUpDJuqFFkKnWvIhEgaRjSr8t3wM+p613RVFeysyeTsWXqDZZ5wy6ZucMlru5qAiRAFnDw05STywdcZee2ZxwE7G3tWrZsOV2j1kBRFMycMZOqVauGqVOnokaNGr6MAee2p+4791MW9AGSo1H9gz5UiQi+Iaom3v3lBcCyDX+5u1MXqAEpZdReQ3aJwidIgMZPBGNKLhiWwqUVgloj4ffPUoYb0q1ggj3/ufjXs3ejM6SZceDzW8PVOqlAMCWyNxtX6QhaPwkx23Pw7aDrbM+nt5qasiwAZDRo0KDjnj17KCoqaobJZELr1q0/Gj9+PAAgMDAQS5cuzQLs9Rl3fpDAMm4okHQPPvaO5c6rNlDIw2Ne8gJgGQRAO8uqfalsxmyRvTAnZBF7Pkhbf3mXCQxq+ARJkHR2sLoTjExFHrtax3D7ggXntqR/y1jJwM9ZpWaM4fyWjG+To61Q6fJKgYpMYCLBJ1iF1KvA+tHxTVaPvc5uXzICUBAQGIBZs2bRX3/9tff27dtYvXo10+l0WLx48TuiKCIuLg4GgwGdOnXCG2+8SYoiIyfVgl//c6ueSq168LZABkBh0Pjl/seLf14ALMsasMAEqHVCmYzVIoWg9ZGw56PUGb8vTei3ZlQs+/bZq2z/x2m/p16SofURoQ8UIEoAyUVTXUkhSDoRl37LPmO1WB19jksFtAXAYrIh+rfMi2qd4OQ8UaALFKBYReydn7b3u2evsL9/TfvLru7KGDRoEP1x7A96//33ERcXhxEjRjAAeO+996hRo0aQZRlt2rRhCxYsAADMmTMHdevWrQ+m4MJv6edPr8mALkiEYqMHvm5qnZSrDnu3mRcAyyLl9p1gIiCoqcyd1IqN4BMs4dg3mTixKnGmIDEANiReMmDf53Htlz8Tw9a8Eh90am0OzBkEXaAKGl8RAHmkIjOBoFiAa0cNTYsuPxautQNA7BHjo4qFgWRApWPQ+GpwcbMRKwZcYwc+v9XZZLAAIDRu0vjZLVu20KpVq1CjRg0QEcaOHYv09HQ0b9787QkTJiAXCFGvXr3MFStWRJ0+fRo+Pj5YunTpGYEJEASG3z5KYOkxil3qfIAmXSKCqJG8eeNeACz7IqAg2cM46P7n1rsGP5mgDZQQs8eCXR/EMUEAtBo96tSpWxtQoFKJsFptuPx7WvqmSdfZ1/1j2bZJiW/FHjJBYCrog0VIWq4iFwDuZE//M2coSI012V0HpWkCyL1W6jVTtjkH8A0XkRot4+eRN2qtG3edJV3JASAjKDgIH3zwAR09cnRN7969YbHYi89+//33+OWXX5hGo8Fnn302X6vVYt++fTh37lzW1q1b/UaPHn1t2LBh/YkIbdu2xfjx40lRZBjSrdg+OzFCUqlA7AEhIAOIGASVcid90hsK6AXAMjuhzF5ZuKzoKiQDKr2AzKsyfplwndk9pQr+98EH9Pvv+/8uX748rFYZoiRCo1UDUJB524gTa5MWrHoxlq0YHMsOLsr4O/0qoPMVoQ+wSyLOUqG94jXBZFBgyragtCVAThYjwZQM7PsoZffyQVfZhd2Z0dy7+/zzz9OJ4ydowoQJUKvVsFqtUKlUSEhIwLvvvssA4N1336UWLVogJycHq1atwssvv+yXkJCAMWPGQK1W15o7dy4AYPr06WjYsGF3gHB5f1riyR8yoA9QPVBVWBC8QdD3THHzUinNJAEanQovbahO/pEMNsuDzSul3KILgsKw4oUbLOFsDggKXnr5JVr21TIAwIEDB/DYY48xIkL//v2pYcOGWLbsK3blytU856RWL6FyC31knd5BN6u208K3nATZJsNqkKHYGCQtQ85twldPXmLmbPlOYnQpkkorwidQhfRbFiC3VVqzZs1emzt37pLu3bsDAGw2G0RRhCzLkCQJAwYMwNq1a1mjRo36Hjp0aJNer8fHH3+Mzz77jMXFxeGJJ56gtWvXIjo6Gi1atGAHDx6kevXq4dixY2jbti1TFAUaHxWGr61OAZUJVuP97c/BQ4syritY9vQlZjXdm7n1SoBeKjWGJYUeeEa93ZGrQKOXsHXq7T7xueDXpk2bhYu/WOwIp2jfvj0+/vhjstls2Lx5M2vXrh2ioy/R+vXraeDAgRQQ6A9AgclgQfTe9LhfJtxgy5+5xnZMvT0j7pgFoqiCLliCoCIIGgZJI96zk9VmJqTfMgFQEBISgo8/nk+HDx9e0r17d8iyDEVRIEmS49/Vq1dj7dq1TK1W4/PPP9+k1+tx6dIlzJgxg129ehVWqxXr1q1jGzZsQM2aNTFx4kR67rnnHicitGjRApMnTyZFUWDMsmHHzASNIDDgAanCROQNgfECYNknWVbsVaAfuN0P8AmScOiz9L/PbEndygSgQoUKWLNmzViVWgWj0YirV+1S3pgxY/Diiy9STk4OnnjiCXbt2jU89dRT+PHHH3H2zDlauHAhtW7d+iO75GNDerwRf6y6PfP7F66x74fEsqOLM+LTrwgIqqhBSFUdtwWUnnDNGERRBA8uHz58OP3555/01ltvQ6VSQZZliKJobzSl2CvwJCUl4e2332YA8Oabb1Lbtm25MyQ+KysLkiRBEAQwxvDmm2+ytLQ0vPfeeyAiy5w5cwAAU6ZMQbNmj74OyLhyON1y4ttssz7w/qvCDPbWporiVdi8KnBZn1Am4KWfalBYbdHe5lK4/0sqyzJ8AiVc3GbGujevMkGwVxTZvXsPtW3bFgDw6quvYtWqVezmzZsUEBAAs9mMjh07Tj527Ni8Jk2aDN6/f/8PGo0GKpXKceVjx47hxx9/xPoN69m1q9ec7ilB6yOiVmffJ9IS5I3XT2TkppuVHCi4OgvYszjmzp07o0uXLnnUXWfbmM1mgyRJGDp0KFasWMHq1KlT89ixYxd9fX2xbNkyvPLKK0ySJNhsdl8N/3v06NH02Wef4cyZM2jZsiX7448/qF69ejh58iRatWrFbDYZKr2E4T9WpaBqwn1bW1IAlZ4h6Tzh62cuMSKbd5N5AbDMoh9ADMN+qEYVmmpgyVHuOwAqMkHjKyA1WsG3z19h1hwFsmzDl19+Sa+88goAYOHChZg/fz5r2bIlXbt27Z1jx47NB4ArV66gVatWLCkpCS+88AJ99913sFgsEAQhD9BkZ2dj586dWLlyJX79dSfLysp2YijJHhKjKCUyVAmC4FD7wsLC8P7779OoUaMcgMilt7zSt10S3LBhA/r168dEUcTOnTupc+fOuHnzJho1asTS09PvUift0iVhz5491KFDB0yfPh3r16/vdOrUqb2MMcyZMwdTp05lgIgqzX3w3LdVyGyy3henBCmA2och7oQZ3z13lYEpXvufVwUuo5PJ7NY3czZ7IJWFSQEkNYM5S8BPb8cyc6YNsmzDm2++6QC/AwcO4M0332Rr166lNWvWQBTFkBEjRgAAqlWrhm+//ZZEUcSKFSvYJ598ArVa7VBDFUWBLMvw9fVFv3798NNPP+H06TM0f/58at780XH20dugKDJEUbhLOiuKuqsoCogIr7zyCv355580duxYB/gVdF0ie8ZIamoq3nzzTUZEGDlyJHXu3Bm5ajBSU1PtlZXz2dKI7IA9evToNgaDAdOmTYPFYonmqvDEiRPRunXrjwAZsX9k4ejX6Tf1gdJ9U4WZwGDJUQAo3s5wXgAs6wI1wZhpz4O9r0ZrAsBkqNQStkyIq5582QyCgm7dul34+OOPAQDx8fHo0aMH+/LLL6lFixa4du0aZs6cOXnHjh1sxYoVAIBevXph9uzZlLvx2e7duyFJkkPq4tISdzpERUXh7bffxrFjf3xy8OBBGjNmDFWsWBGyLEOWZRCRw97mibrLr92mTZuFe/fupS+//BIVK1Z0qKyiKLqwvdqfb+LEibh+/ToeeeQR9ezZswEAP/74I37++WfGx3GX1JzrNDl79uzh//73vxBFET/88EP8zJkz2fnz5yFJEr788st3dDodBIHhwOe3Kt06bYPa994HSBPZK+MYM5Q7WoaXvCpwmTxNRAGKrKDb5Mj0li8HBRjSbKVSzdgj1demwCdEwm/zUn889GXCYACoXr06jhw5QiEhIVAUBXXr1g3t0qVL8uLFi5GTk4NOnTqNPXXq1GfVqlUrf/369YRjx45R/fr1AcARPlKhQgUcOXKEKlWqBEVR7gIyRVEcAMIpIyMD27dvx8qVK7Fr1y5mNBrzSHccGJ2Bj0t8EREReP/99+n111+HIAgu1d2CVN9t27ahT58+jDGGrVu3Uo8ePZCUlIRGjRqxxMREx/O6kjwFQYAkSTh69Cg1atQIEyZMwNatWx89c+bMccYY5s+fnxtTKKFSEx88t6IyWay2eypF2GsrSjj6VUbWr/Nu+AsiK1MFW70SoJfuopzbypb7dVKzXPDTh6hwao0Bh768NVgQRfj4+GDdunUUGhoKxhgGDBiAkJCQSYsXLwYAjBo1CsePH//MZrPh4sWLCUajEQMHDmyQmZkJIsJXX32F+vXrt46Pj8eQIUOWW63WAkMxOGhwIJJlGQEBARg4cCA2btyI06dP03//+19q3LhxPyKCzWazp3aJouPFpbLXX3+d/vzzTxo1apQD/ApTo7nqm5mZiTFjxjCuNvfo0QMA8M477yAhIcGhwru7DgCYzWaMHj16qc1mw5w5c5CdnX3iP//5DwDgrbfeQocOHX8GbLhxMhNHl6Se8A0Q73nZLMaA7CTzWq/I4gXAMk72TZSRYPkainJfeFWRAU2AiJvHrdg2K55JkghFlvH1119T48aNAQBz587F/v372ebNm98BgP/973/47rvvGAcuLpmdP3/+7EsvvQTGGPz9/fHjjz8eCggIwO+///7iuHHj8oCVKxU2v4r8yCOPYOLEiThx4sRPe/fupREjRlD58uUdYCnLMtq3b79y//79tHjxYpQvX75Qdbcg1XfSpEm4cuUKoqKiMG/ePADAli1bsGLFClbYcztfS5IkHDx4cMQXX3wBlUqFVatW0bRp09j58+chCAKWLl3ytI+PDwSB4felSY/GnbBA44dSqXzj2rbLkJWorHdiMS95VeAyOJm5TZEqNw3A899XJpPJCuEeSoKkEEQNgyUd+HZQLMuIs0AhG96f9j7NmjkLALB161b07duX/fXXX9SwYUNs2rQJTzzxhMMe5izR8ZCQOXPm0OTJkwEAa9euxYABAxgAhyeZh5p4BNAFqMipqanYtm0b1q1bh+7du2PkyJF5wMxTxwmXEHfv3o1u3boxIsIvv/xCjz/+ODIyMtC4cWMWGxtbqPSXXxVmjMHX1xcnT56katWq4Y033sCuXbtqnTt37iJjDJ999hnGjh3LAAEV6vvihR+qkCybYW+yWNpFZglqrYSVQ6+z68czwUR7eqOXvABY9iYzNwU4sIIGL214hESNDJLZPZllIoAxgqSWsPqlm+zq0UwACvr160c//fQTACAmJga1atViK1eupIEDB+LcuXNo164d42pufnWWS4I2mw1btmyh3r17AwAmT56MefPmMb1ej927d1PLli0d4FMU4lJYQb8ryL5YGDAQEYxGI5o1a1bh4sWLCcOG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";
+
+// ── CONSTANTS ──────────────────────────────────────────────────────
+const LOCS=['f52','lunken','northshore'];
+const LOC_LABELS={f52:'Factory 52',lunken:'Lunken Landing',northshore:'North Shore'};
+const LOC_COLORS={f52:'#79cd46',lunken:'#ff7040',northshore:'#73c0d2'};
+const CATS=['Paddles','Apparel','Footwear','Accessories','Balls','Bags'];
+const CAT_COLORS={Paddles:'#2b3252',Apparel:'#79cd46',Footwear:'#ff7040',Accessories:'#73c0d2',Balls:'#EF9F27',Bags:'#1D9E75'};
+const CAT_ICONS={Paddles:'🏓',Apparel:'👕',Footwear:'👟',Accessories:'🎽',Balls:'🟡',Bags:'🎒'};
+
+// ── STATE ──────────────────────────────────────────────────────────
+let currentLoc='all', reportView='matrix', insightsLoc='all', insightsPeriod='week';
+let editId=null, receivingPOId=null;
+let pendingSync=[], syncLogs=[], poLines=[];
+let nextId=9, nextPOId=1001;
+
+// ── TEAM MEMBERS ──────────────────────────────────────────────────
+let teamMembers=[
+  {id:1,name:'Alex Rivera',email:'alex@thepicklelodge.com',role:'Buyer',cats:['Paddles','Accessories']},
+  {id:2,name:'Morgan Lee',email:'morgan@thepicklelodge.com',role:'Buyer',cats:['Apparel','Footwear','Bags']},
+  {id:3,name:'Casey Park',email:'casey@thepicklelodge.com',role:'Manager',cats:['Balls']},
+];
+let nextTeamId=4;
+let emailingPOId=null;
+let activeCountSession=null;
+
+// Change log: every inventory change gets recorded here
+let changeLog=[];
+
+let countSessions=[];
+
+let crConfig={
+  f52:{orgId:'',apiKey:'',baseUrl:'https://app.courtreserve.com/api/v1',imgSync:'Pull From CourtReserve On Connect',freq:'On Every Adjustment',status:'pending'},
+  lunken:{orgId:'',apiKey:'',baseUrl:'https://app.courtreserve.com/api/v1',imgSync:'Pull From CourtReserve On Connect',freq:'On Every Adjustment',status:'pending'},
+  northshore:{orgId:'',apiKey:'',baseUrl:'https://app.courtreserve.com/api/v1',imgSync:'Pull From CourtReserve On Connect',freq:'On Every Adjustment',status:'pending'},
+};
+
+// ── INVENTORY DATA ──────────────────────────────────────────────────
+let inventory=[
+  {id:1,name:'Selkirk AMPED Epic',sku:'SK-EP-001',cat:'Paddles',brand:'Selkirk',cost:89,retail:149.99,qty:{f52:8,lunken:3,northshore:12},threshold:4,reorderQty:8,crId:'CR-1001',imgUrl:'',sales:{f52:[12,15,11,18,14,8,16,22,19,13,17,20],lunken:[6,8,5,9,7,4,8,11,9,6,8,10],northshore:[18,22,19,25,20,15,24,28,23,17,21,26]}},
+  {id:2,name:'JOOLA Ben Johns Hyperion',sku:'JL-BJ-002',cat:'Paddles',brand:'JOOLA',cost:95,retail:169.99,qty:{f52:2,lunken:1,northshore:0},threshold:3,reorderQty:6,crId:'CR-1002',imgUrl:'',sales:{f52:[8,10,7,12,9,6,11,14,12,8,11,13],lunken:[3,4,3,5,4,2,4,6,5,3,4,5],northshore:[10,12,10,15,11,8,13,17,14,10,13,15]}},
+  {id:3,name:'Pickleball Polo Shirt',sku:'AP-PS-001',cat:'Apparel',brand:'The Pickle Lodge',cost:18,retail:39.99,qty:{f52:15,lunken:22,northshore:10},threshold:5,reorderQty:12,crId:'CR-1003',imgUrl:'',sales:{f52:[20,24,18,28,22,16,26,32,27,20,24,29],lunken:[15,18,14,21,16,12,19,24,20,15,18,22],northshore:[12,15,11,17,13,9,15,19,16,12,14,17]}},
+  {id:4,name:'Court Shoes — Size 10',sku:'FW-CS-010',cat:'Footwear',brand:'K-Swiss',cost:55,retail:89.99,qty:{f52:4,lunken:2,northshore:6},threshold:3,reorderQty:6,crId:'CR-1004',imgUrl:'',sales:{f52:[5,6,4,8,6,3,7,9,7,5,6,8],lunken:[3,4,3,5,3,2,4,5,4,3,4,5],northshore:[7,8,6,10,7,5,8,11,9,6,8,9]}},
+  {id:5,name:'Dura Fast 40 Balls (3-pack)',sku:'BL-DF-003',cat:'Balls',brand:'Dura Sport',cost:9,retail:16.99,qty:{f52:30,lunken:18,northshore:25},threshold:10,reorderQty:24,crId:'CR-1005',imgUrl:'',sales:{f52:[35,42,38,48,40,30,44,54,46,34,42,50],lunken:[22,26,24,30,25,19,27,34,29,21,26,31],northshore:[28,34,31,38,32,24,36,44,37,27,33,40]}},
+  {id:6,name:'Paddle Grip Tape',sku:'AC-GT-001',cat:'Accessories',brand:'Tourna',cost:4,retail:8.99,qty:{f52:20,lunken:12,northshore:0},threshold:5,reorderQty:12,crId:'CR-1006',imgUrl:'',sales:{f52:[18,22,16,26,20,14,22,28,24,17,21,25],lunken:[10,12,9,14,11,8,12,15,13,9,12,14],northshore:[14,17,13,20,15,11,17,22,18,13,16,19]}},
+  {id:7,name:'Court Bag — Pro',sku:'BG-PR-001',cat:'Bags',brand:'Head',cost:38,retail:74.99,qty:{f52:5,lunken:3,northshore:8},threshold:3,reorderQty:6,crId:'CR-1007',imgUrl:'',sales:{f52:[4,5,4,6,5,3,5,7,6,4,5,6],lunken:[2,3,2,4,3,2,3,4,3,2,3,4],northshore:[5,6,5,7,6,4,6,8,7,5,6,7]}},
+  {id:8,name:'Compression Shorts',sku:'AP-CS-001',cat:'Apparel',brand:'The Pickle Lodge',cost:14,retail:28.99,qty:{f52:10,lunken:0,northshore:7},threshold:4,reorderQty:10,crId:'CR-1008',imgUrl:'',sales:{f52:[8,10,7,12,9,6,10,14,11,8,10,12],lunken:[5,6,5,7,5,4,6,8,7,5,6,7],northshore:[6,8,6,9,7,5,7,10,8,6,7,9]}},
+  {id:9,name:'Selkirk Pickleball Hat',sku:'SK-HT-001',cat:'Apparel',brand:'Selkirk',cost:16,retail:32.99,qty:{f52:12,lunken:8,northshore:6},threshold:4,reorderQty:8,crId:'CR-1009',imgUrl:'',sales:{f52:[10,12,9,14,11,8,12,15,13,9,12,14],lunken:[6,8,5,9,7,4,8,10,8,6,7,9],northshore:[7,9,7,11,8,6,9,12,10,7,9,11]}},
+  {id:10,name:'Franklin X-40 Outdoor Balls',sku:'BL-FR-001',cat:'Balls',brand:'Franklin',cost:7,retail:13.99,qty:{f52:22,lunken:15,northshore:18},threshold:8,reorderQty:20,crId:'CR-1010',imgUrl:'',sales:{f52:[25,30,27,34,28,21,31,38,32,24,29,35],lunken:[15,18,16,21,17,13,19,23,20,15,18,22],northshore:[18,22,20,26,21,16,23,28,24,18,21,26]}},
+];
+
+let transfers=[], adjustments=[], purchaseOrders=[], receivingLog=[];
+
+// ── HELPERS ───────────────────────────────────────────────────────
+const getQty=(item,loc)=>loc==='all'?LOCS.reduce((s,l)=>s+(item.qty[l]||0),0):(item.qty[loc]||0);
+const totalQty=item=>LOCS.reduce((s,l)=>s+(item.qty[l]||0),0);
+const statusOf=(item,loc)=>{if(loc==='all'){return LOCS.some(l=>(item.qty[l]||0)===0)?'out':LOCS.some(l=>(item.qty[l]||0)<=item.threshold)?'low':'in';}const q=item.qty[loc]||0;return q===0?'out':q<=item.threshold?'low':'in';};
+const statusBadge=s=>`<span class="badge badge-${s==='in'?'in':s==='low'?'low':'out'}">${s==='in'?'In Stock':s==='low'?'Low Stock':'Out Of Stock'}</span>`;
+const fmt=n=>'$'+Number(n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const fmtN=n=>Number(n).toLocaleString();
+const pct=(a,b)=>b>0?((b-a)/b*100).toFixed(1)+'%':'—';
+const tsNow=()=>new Date().toLocaleString();
+const today=()=>new Date().toLocaleDateString();
+const toast=msg=>{const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800);};
+const itemImg=item=>{if(item.imgUrl)return`<img src="${item.imgUrl}" alt="${item.name}" onerror="this.outerHTML='<span style=\\'font-size:18px\\'>${CAT_ICONS[item.cat]||'📦'}</span>'">`;return`<span style="font-size:18px">${CAT_ICONS[item.cat]||'📦'}</span>`;};
+const trendClass=delta=>delta>0?'trend-up':delta<0?'trend-down':'trend-flat';
+const trendIcon=delta=>delta>0?'<i class="ti ti-trending-up"></i>':delta<0?'<i class="ti ti-trending-down"></i>':'<i class="ti ti-minus"></i>';
+const compareBadge=(cur,prev)=>{if(prev===0)return`<span class="compare-badge compare-flat">—</span>`;const d=((cur-prev)/prev*100);return`<span class="compare-badge ${d>0?'compare-up':d<0?'compare-down':'compare-flat'}">${d>0?'↑':'↓'} ${Math.abs(d).toFixed(1)}%</span>`;};
+
+function allBrands(){return[...new Set(inventory.map(i=>i.brand))].sort();}
+
+// ── LOG HELPER ────────────────────────────────────────────────────
+function logChange({user,type,itemId,itemName,loc,before,after,reason,notes}){
+  changeLog.unshift({
+    ts:tsNow(),user:user||'System',type,itemId,itemName,
+    loc,before,after,delta:after-before,reason:reason||'',notes:notes||''
+  });
+}
+
+// ── SALES HELPERS ─────────────────────────────────────────────────
+function getSalesForPeriod(item,loc,period,current=true){
+  const mo=new Date().getMonth();
+  if(loc==='all'){return LOCS.reduce((sum,l)=>{const arr=item.sales[l]||Array(12).fill(0);if(period==='week'){const b=arr[current?mo:Math.max(0,mo-1)];return sum+Math.round(b*(current?0.25:0.22));}if(period==='month')return sum+(arr[current?mo:Math.max(0,mo-1)]||0);if(period==='quarter'){const s2=current?Math.max(0,mo-2):Math.max(0,mo-5);const e=current?mo:mo-3;return sum+arr.slice(s2,e+1).reduce((a,b)=>a+b,0);}return sum;},0);}
+  const arr=item.sales[loc]||Array(12).fill(0);
+  if(period==='week'){const b=arr[current?mo:Math.max(0,mo-1)];return Math.round(b*(current?0.25:0.22));}
+  if(period==='month')return arr[current?mo:Math.max(0,mo-1)]||0;
+  if(period==='quarter'){const s2=current?Math.max(0,mo-2):Math.max(0,mo-5);const e=current?mo:mo-3;return arr.slice(s2,e+1).reduce((a,b)=>a+b,0);}
+  return 0;
+}
+function getSalesRevForPeriod(item,loc,period,current=true){return getSalesForPeriod(item,loc,period,current)*item.retail;}
+
+// ── NAVIGATION ────────────────────────────────────────────────────
+document.querySelectorAll('.nav-item').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    el.classList.add('active');
+    const tab=el.dataset.tab;
+    document.getElementById('tab-'+tab).classList.add('active');
+    document.getElementById('page-title').textContent=el.querySelector('span')?.textContent.trim()||tab;
+    renderAll();
+  });
+});
+document.querySelectorAll('.loc-tab').forEach(el=>{
+  el.addEventListener('click',()=>{
+    document.querySelectorAll('.loc-tab').forEach(t=>t.classList.remove('active'));
+    el.classList.add('active');currentLoc=el.dataset.loc;renderAll();
+  });
+});
+document.querySelectorAll('#report-tabs .sub-tab').forEach(el=>{
+  el.addEventListener('click',()=>{document.querySelectorAll('#report-tabs .sub-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');reportView=el.dataset.view;renderReports();});
+});
+document.querySelectorAll('#insights-loc-tabs .sub-tab').forEach(el=>{
+  el.addEventListener('click',()=>{document.querySelectorAll('#insights-loc-tabs .sub-tab').forEach(t=>t.classList.remove('active'));el.classList.add('active');insightsLoc=el.dataset.iloc;renderInsights();});
+});
+document.querySelectorAll('.period-btn').forEach(el=>{
+  el.addEventListener('click',()=>{document.querySelectorAll('.period-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');insightsPeriod=el.dataset.period;renderInsights();});
+});
+
+function renderAll(){
+  renderDashboard();renderInventory();renderReorder();renderTransfers();
+  renderAdjustments();renderPOs();renderReceive();renderCycleCountHistory();
+  renderChangeLog();renderInsights();renderReports();renderCR();
+  renderTeamTab();
+  populateItemSelects();populateBrandFilter();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────────
+function renderDashboard(){
+  const items=inventory;
+  const tQ=items.reduce((s,i)=>s+getQty(i,currentLoc),0);
+  const tC=items.reduce((s,i)=>s+getQty(i,currentLoc)*i.cost,0);
+  const tR=items.reduce((s,i)=>s+getQty(i,currentLoc)*i.retail,0);
+  const lowN=items.filter(i=>statusOf(i,currentLoc)!=='in').length;
+  document.getElementById('dash-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">SKUs</div><div class="metric-value">${items.length}</div><div class="metric-sub">product lines</div></div>
+    <div class="metric-card"><div class="metric-label">Total Units</div><div class="metric-value">${tQ}</div><div class="metric-sub">${currentLoc==='all'?'all locations':LOC_LABELS[currentLoc]}</div></div>
+    <div class="metric-card"><div class="metric-label">Retail Value</div><div class="metric-value">${fmt(tR)}</div><div class="metric-sub">Cost: ${fmt(tC)}</div></div>
+    <div class="metric-card"><div class="metric-label">Needs Attention</div><div class="metric-value" style="color:${lowN>0?'var(--red)':'inherit'}">${lowN}</div><div class="metric-sub">${purchaseOrders.filter(p=>p.status!=='Received').length} open POs</div></div>`;
+  const low=items.filter(i=>statusOf(i,currentLoc)!=='in');
+  document.getElementById('dash-alerts').innerHTML=low.length===0
+    ?`<div style="padding:24px;text-align:center;color:var(--text-3)"><i class="ti ti-circle-check" style="font-size:24px;display:block;margin-bottom:6px;color:var(--green)"></i>All items well stocked</div>`
+    :`<table><thead><tr><th>Item</th><th>Location</th><th>Qty</th><th>Status</th></tr></thead><tbody>${low.map(i=>{if(currentLoc!=='all')return`<tr><td>${i.name}</td><td>${LOC_LABELS[currentLoc]}</td><td>${getQty(i,currentLoc)}</td><td>${statusBadge(statusOf(i,currentLoc))}</td></tr>`;return LOCS.filter(l=>statusOf(i,l)!=='in').map(l=>`<tr><td>${i.name}</td><td>${LOC_LABELS[l]}</td><td>${i.qty[l]||0}</td><td>${statusBadge(statusOf(i,l))}</td></tr>`).join('');}).join('')}</tbody></table>`;
+  const maxV=Math.max(...LOCS.map(l=>items.reduce((s,i)=>s+i.retail*(i.qty[l]||0),0)))||1;
+  document.getElementById('dash-loc-bars').innerHTML=LOCS.map(l=>{const rv=items.reduce((s,i)=>s+i.retail*(i.qty[l]||0),0);const cv=items.reduce((s,i)=>s+i.cost*(i.qty[l]||0),0);return`<div class="card card-pad" style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;margin-bottom:2px"><span style="font-weight:600;font-size:13px">${LOC_LABELS[l]}</span><span style="color:var(--text-2);font-size:12px">${fmt(rv)} retail</span></div><div style="font-size:11px;color:var(--text-3);margin-bottom:6px">Cost: ${fmt(cv)}</div><div class="loc-bar-track"><div class="loc-bar-fill" style="width:${Math.round(rv/maxV*100)}%;background:${LOC_COLORS[l]}"></div></div></div>`;}).join('');
+}
+
+// ── INVENTORY ─────────────────────────────────────────────────────
+function populateBrandFilter(){
+  const sel=document.getElementById('brand-filter');if(!sel)return;
+  const cur=sel.value;
+  sel.innerHTML='<option value="">All Brands</option>'+allBrands().map(b=>`<option value="${b}"${b===cur?' selected':''}>${b}</option>`).join('');
+}
+function renderInventory(){
+  populateBrandFilter();
+  const s=(document.getElementById('inv-search')||{}).value||'';
+  const c=(document.getElementById('cat-filter')||{}).value||'';
+  const b=(document.getElementById('brand-filter')||{}).value||'';
+  const items=inventory.filter(i=>
+    (!s||(i.name+i.sku+i.brand).toLowerCase().includes(s.toLowerCase()))&&
+    (!c||i.cat===c)&&(!b||i.brand===b));
+  document.getElementById('inv-tbody').innerHTML=items.map(i=>`<tr>
+    <td><div class="item-info"><div class="item-img">${itemImg(i)}</div><div><div class="item-name">${i.name}</div><div style="font-size:10.5px;color:var(--text-3)">${i.crId?'CR: '+i.crId:''}</div></div></div></td>
+    <td style="font-size:11px;color:var(--text-2)">${i.cat}</td>
+    <td style="font-size:12px;font-weight:500">${i.brand}</td>
+    <td><span class="mono">${i.sku}</span></td>
+    <td style="text-align:center;${(i.qty.f52||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.f52||0}</td>
+    <td style="text-align:center;${(i.qty.lunken||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.lunken||0}</td>
+    <td style="text-align:center;${(i.qty.northshore||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.northshore||0}</td>
+    <td style="text-align:center;font-weight:600">${totalQty(i)}</td>
+    <td>${fmt(i.cost)}</td><td>${fmt(i.retail)}</td>
+    <td>${statusBadge(statusOf(i,currentLoc))}</td>
+    <td><button class="btn btn-sm" onclick="openEditModal(${i.id})"><i class="ti ti-edit"></i></button></td>
+  </tr>`).join('')||`<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--text-3)">No items found</td></tr>`;
+}
+
+// ── REORDER ───────────────────────────────────────────────────────
+function getReorderItems(){
+  return inventory.filter(i=>LOCS.some(l=>(i.qty[l]||0)<=i.threshold))
+    .map(i=>({...i,suggested:i.reorderQty||Math.max(6,i.threshold*2),estCost:(i.reorderQty||Math.max(6,i.threshold*2))*i.cost}));
+}
+function renderReorder(){
+  const items=getReorderItems();
+  document.getElementById('reorder-tbody').innerHTML=items.length===0
+    ?`<tr><td colspan="12" style="text-align:center;padding:24px;color:var(--text-3)"><i class="ti ti-circle-check" style="font-size:22px;display:block;margin-bottom:6px;color:var(--green)"></i>No items need reordering</td></tr>`
+    :items.map(i=>{const worst=LOCS.reduce((a,l)=>(i.qty[l]||0)<(i.qty[a]||0)?l:a,LOCS[0]);const s=statusOf(i,worst);
+      return`<tr class="${s==='out'?'hl-out':s==='low'?'hl-low':''}">
+        <td><div class="item-info"><div class="item-img">${itemImg(i)}</div><div><div class="item-name">${i.name}</div></div></div></td>
+        <td style="font-size:12px;font-weight:500;color:var(--navy)">${i.brand}</td>
+        <td style="font-size:11px;color:var(--text-2)">${i.cat}</td>
+        <td style="text-align:center;${(i.qty.f52||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.f52||0}</td>
+        <td style="text-align:center;${(i.qty.lunken||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.lunken||0}</td>
+        <td style="text-align:center;${(i.qty.northshore||0)<=i.threshold?'color:var(--red);font-weight:600':''}">${i.qty.northshore||0}</td>
+        <td style="text-align:center">${i.threshold}</td>
+        <td style="text-align:center;font-weight:600">${i.suggested}</td>
+        <td>${fmt(i.cost)}</td><td style="font-weight:600">${fmt(i.estCost)}</td>
+        <td>${statusBadge(s)}</td>
+        <td><button class="btn btn-sm btn-amber" onclick="createPOFromItem(${i.id})"><i class="ti ti-file-invoice"></i></button></td>
+      </tr>`;}).join('');
+}
+
+// ── BRAND-BASED PO CREATION ───────────────────────────────────────
+function createPOByBrand(){
+  const items=getReorderItems();
+  if(!items.length){toast('No items need reordering');return;}
+  // Group by brand
+  const brands={};
+  items.forEach(i=>{if(!brands[i.brand])brands[i.brand]=[];brands[i.brand].push(i);});
+  const brandList=Object.keys(brands);
+  let created=0;
+  brandList.forEach(brand=>{
+    const brandItems=brands[brand];
+    const lines=brandItems.map(i=>({
+      itemId:i.id,itemName:i.name,sku:i.sku,
+      qty:i.suggested,unitCost:i.cost,lineCost:i.suggested*i.cost,
+      dist:(()=>{const e=Math.floor(i.suggested/3);const r=i.suggested%3;return{f52:e+(r>0?1:0),lunken:e+(r>1?1:0),northshore:e};})(),
+      received:{f52:0,lunken:0,northshore:0}
+    }));
+    const po={
+      id:nextPOId++,supplier:brand,
+      date:new Date().toISOString().slice(0,10),expected:'',notes:`Auto-generated from reorder alerts`,
+      lines,
+      totalCost:lines.reduce((s,l)=>s+l.lineCost,0),
+      totalUnits:lines.reduce((s,l)=>s+l.qty,0),
+      status:'Draft',
+      destinations:'All Locations'
+    };
+    // Auto-assign buyer based on categories in this brand's items
+    const brandCats=[...new Set(brandItems.map(i=>i.cat))];
+    const buyer=teamMembers.find(m=>brandCats.some(c=>m.cats.includes(c)));
+    if(buyer){po.assigneeId=buyer.id;po.assigneeName=buyer.name;po.buyerEmail=buyer.email;}
+    purchaseOrders.push(po);
+    created++;
+  });
+  renderAll();
+  // Switch to PO tab
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+  document.querySelector('[data-tab="purchase-orders"]').classList.add('active');
+  document.getElementById('tab-purchase-orders').classList.add('active');
+  document.getElementById('page-title').textContent='Purchase Orders';
+  toast(`Created ${created} PO${created>1?'s':''} — one per brand`);
+}
+function createPOFromReorder(){
+  const items=getReorderItems();if(!items.length){toast('No items need reordering');return;}
+  poLines=items.map(i=>({itemId:i.id,qty:i.suggested,unitCost:i.cost,dist:'all',f52:0,lunken:0,northshore:0}));
+  openNewPOModal();setTimeout(()=>{renderPOLines();updatePOTotal();},50);
+}
+function createPOFromItem(id){
+  const i=inventory.find(x=>x.id===id);
+  poLines=[{itemId:i.id,qty:i.reorderQty||6,unitCost:i.cost,dist:'all',f52:0,lunken:0,northshore:0}];
+  openNewPOModal(i.brand);
+  setTimeout(()=>{document.getElementById('po-supplier').value=i.brand;renderPOLines();updatePOTotal();},50);
+}
+
+// ── TRANSFERS ─────────────────────────────────────────────────────
+function renderTransfers(){
+  populateItemSelects();
+  document.getElementById('xfer-tbody').innerHTML=transfers.length===0
+    ?`<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--text-3)">No transfers recorded</td></tr>`
+    :transfers.slice().reverse().map(t=>`<tr><td>${t.name}</td><td>${LOC_LABELS[t.from]}</td><td>${LOC_LABELS[t.to]}</td><td style="text-align:center">${t.qty}</td><td style="font-size:11px;color:var(--text-3)">${t.date}</td><td style="font-size:11px;color:var(--text-3)">${t.notes||'—'}</td></tr>`).join('');
+}
+function doTransfer(){
+  const itemId=parseInt(document.getElementById('xfer-item').value);
+  const from=document.getElementById('xfer-from').value,to=document.getElementById('xfer-to').value;
+  const qty=parseInt(document.getElementById('xfer-qty').value)||0;
+  const notes=document.getElementById('xfer-notes').value;
+  if(!itemId){toast('Select an item');return;}
+  if(from===to){toast('From and To must be different');return;}
+  if(qty<1){toast('Quantity must be at least 1');return;}
+  const item=inventory.find(i=>i.id===itemId);
+  if((item.qty[from]||0)<qty){toast(`Only ${item.qty[from]||0} available at ${LOC_LABELS[from]}`);return;}
+  const beforeFrom=item.qty[from],beforeTo=item.qty[to];
+  item.qty[from]-=qty;item.qty[to]+=qty;
+  transfers.push({name:item.name,from,to,qty,notes,date:today()});
+  logChange({user:'Staff',type:'transfer',itemId:item.id,itemName:item.name,loc:from,before:beforeFrom,after:item.qty[from],reason:`Transfer to ${LOC_LABELS[to]}`,notes});
+  logChange({user:'Staff',type:'transfer',itemId:item.id,itemName:item.name,loc:to,before:beforeTo,after:item.qty[to],reason:`Transfer from ${LOC_LABELS[from]}`,notes});
+  queueSync(item,from);queueSync(item,to);
+  renderAll();toast(`Transferred ${qty}× ${item.name} → ${LOC_LABELS[to]}`);
+}
+
+// ── ADJUSTMENTS ───────────────────────────────────────────────────
+function renderAdjustments(){
+  populateItemSelects();
+  document.getElementById('adj-tbody').innerHTML=adjustments.length===0
+    ?`<tr><td colspan="8" style="text-align:center;padding:18px;color:var(--text-3)">No adjustments recorded</td></tr>`
+    :adjustments.slice().reverse().map(a=>`<tr>
+        <td style="font-weight:500">${a.user||'—'}</td>
+        <td>${a.name}</td><td>${LOC_LABELS[a.loc]}</td>
+        <td style="text-align:center">${a.before}</td>
+        <td style="text-align:center;font-weight:600;color:${a.delta>0?'var(--green)':a.delta<0?'var(--red)':'inherit'}">${a.delta>0?'+':''}${a.delta}</td>
+        <td style="text-align:center">${a.after}</td>
+        <td style="font-size:11px;color:var(--text-3)">${a.reason}</td>
+        <td style="font-size:11px;color:var(--text-3)">${a.date}</td>
+      </tr>`).join('');
+}
+function doAdjustment(){
+  const user=document.getElementById('adj-user').value.trim()||'Staff';
+  const itemId=parseInt(document.getElementById('adj-item').value);
+  const loc=document.getElementById('adj-loc').value;
+  const type=document.getElementById('adj-type').value;
+  const qty=parseInt(document.getElementById('adj-qty').value)||0;
+  const reason=document.getElementById('adj-reason').value;
+  if(!itemId){toast('Select an item');return;}
+  const item=inventory.find(i=>i.id===itemId);
+  const before=item.qty[loc]||0;
+  let after=type==='set'?qty:type==='add'?before+qty:Math.max(0,before-qty);
+  item.qty[loc]=after;
+  adjustments.push({user,name:item.name,loc,before,delta:after-before,after,reason,date:today()});
+  logChange({user,type:'adjustment',itemId:item.id,itemName:item.name,loc,before,after,reason});
+  queueSync(item,loc);renderAll();
+  toast(`${item.name} @ ${LOC_LABELS[loc]}: ${before} → ${after}`);
+}
+
+// ── PO ────────────────────────────────────────────────────────────
+function openNewPOModal(brandForAssign){
+  document.getElementById('po-modal-title').textContent='New Purchase Order';
+  document.getElementById('po-supplier').value='';
+  document.getElementById('po-supplier-email').value='';
+  document.getElementById('po-buyer-email').value='';
+  document.getElementById('po-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('po-expected').value='';
+  document.getElementById('po-notes').value='';
+  // Populate assignee dropdown
+  const sel=document.getElementById('po-assignee');
+  sel.innerHTML='<option value="">Unassigned</option>'+teamMembers.map(m=>`<option value="${m.id}">${m.name} (${m.role})</option>`).join('');
+  // Auto-assign based on brand items' categories if brandForAssign provided
+  if(brandForAssign){
+    const brandCats=[...new Set(inventory.filter(i=>i.brand===brandForAssign).map(i=>i.cat))];
+    const best=teamMembers.find(m=>brandCats.some(c=>m.cats.includes(c)));
+    if(best){sel.value=best.id;document.getElementById('po-buyer-email').value=best.email;}
+  }
+  if(!poLines.length)poLines=[{itemId:'',qty:1,unitCost:0,dist:'all',f52:0,lunken:0,northshore:0}];
+  renderPOLines();updatePOTotal();
+  document.getElementById('po-modal').style.display='flex';
+}
+function addPOLine(){poLines.push({itemId:'',qty:1,unitCost:0,dist:'all',f52:0,lunken:0,northshore:0});renderPOLines();updatePOTotal();}
+function removePOLine(idx){poLines.splice(idx,1);renderPOLines();updatePOTotal();}
+function renderPOLines(){
+  document.getElementById('po-lines-wrap').innerHTML=poLines.map((line,idx)=>{
+    const opts=inventory.map(i=>`<option value="${i.id}"${line.itemId==i.id?' selected':''}>${i.name}</option>`).join('');
+    return`<div style="border:1px solid var(--border);border-radius:var(--r-sm);padding:12px;margin-bottom:8px">
+      <div class="form-row-3" style="margin-bottom:8px">
+        <div><label class="form-label">Item</label><select class="form-input" onchange="updatePOLineItem(${idx},this.value)"><option value="">Select…</option>${opts}</select></div>
+        <div><label class="form-label">Total Qty</label><input type="number" class="form-input" value="${line.qty}" min="1" onchange="updatePOLineQty(${idx},this.value)"></div>
+        <div><label class="form-label">Unit Cost ($)</label><input type="number" class="form-input" value="${line.unitCost}" step="0.01" onchange="updatePOLineCost(${idx},this.value)"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <span style="font-size:10px;font-weight:600;text-transform:uppercase;color:var(--text-3)">Distribute To:</span>
+        <div class="split-pills">
+          <span class="split-pill${line.dist==='all'?' active':''}" onclick="setDist(${idx},'all')">All Locations</span>
+          <span class="split-pill${line.dist==='one'?' active':''}" onclick="setDist(${idx},'one')">One Location</span>
+          <span class="split-pill${line.dist==='split'?' active':''}" onclick="setDist(${idx},'split')">Custom Split</span>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removePOLine(${idx})" style="margin-left:auto"><i class="ti ti-trash"></i></button>
+      </div>
+      ${renderDistUI(line,idx)}
+      <div style="font-size:11px;color:var(--text-2);margin-top:6px">Line total: <strong>${fmt(line.qty*line.unitCost)}</strong></div>
+    </div>`;
+  }).join('');
+}
+function renderDistUI(line,idx){
+  if(line.dist==='all'){const e=Math.floor(line.qty/3);return`<div style="font-size:11px;color:var(--text-3);margin-top:6px">~${e} to each location (remainder to Factory 52)</div>`;}
+  if(line.dist==='one')return`<div style="margin-top:8px"><label class="form-label">Send All To</label><select class="form-input" style="width:auto" onchange="setOneLoc(${idx},this.value)">${LOCS.map(l=>`<option value="${l}">${LOC_LABELS[l]}</option>`).join('')}</select></div>`;
+  const assigned=LOCS.reduce((s,l)=>s+(line[l]||0),0);
+  return`<div style="margin-top:8px">${LOCS.map(l=>`<div style="display:grid;grid-template-columns:140px 80px 1fr;gap:8px;align-items:center;margin-bottom:5px;font-size:12px"><span>${LOC_LABELS[l]}</span><input type="number" class="form-input" min="0" value="${line[l]||0}" onchange="setSplitQty(${idx},'${l}',this.value)"><span style="font-size:11px;color:var(--text-3)">${fmt((line[l]||0)*line.unitCost)}</span></div>`).join('')}<div style="font-size:11px;font-weight:600;color:${assigned!==line.qty?'var(--red)':'var(--green)'}">${assigned}/${line.qty} assigned</div></div>`;
+}
+function updatePOLineItem(idx,val){poLines[idx].itemId=val;const item=inventory.find(i=>i.id==val);if(item){poLines[idx].unitCost=item.cost;if(!document.getElementById('po-supplier').value)document.getElementById('po-supplier').value=item.brand;}renderPOLines();updatePOTotal();}
+function updatePOLineQty(idx,val){poLines[idx].qty=parseInt(val)||1;renderPOLines();updatePOTotal();}
+function updatePOLineCost(idx,val){poLines[idx].unitCost=parseFloat(val)||0;renderPOLines();updatePOTotal();}
+function setDist(idx,d){poLines[idx].dist=d;if(d==='one'){LOCS.forEach(l=>poLines[idx][l]=0);poLines[idx].f52=poLines[idx].qty;}if(d==='all')LOCS.forEach(l=>poLines[idx][l]=0);renderPOLines();}
+function setOneLoc(idx,loc){LOCS.forEach(l=>poLines[idx][l]=0);poLines[idx][loc]=poLines[idx].qty;renderPOLines();}
+function setSplitQty(idx,loc,val){poLines[idx][loc]=parseInt(val)||0;renderPOLines();}
+function updatePOTotal(){const t=poLines.reduce((s,l)=>s+l.qty*l.unitCost,0);const el=document.getElementById('po-total-display');if(el)el.textContent=fmt(t);}
+function onAssigneeChange(){
+  const sel=document.getElementById('po-assignee');
+  const memberId=parseInt(sel.value);
+  const member=teamMembers.find(m=>m.id===memberId);
+  document.getElementById('po-buyer-email').value=member?member.email:'';
+}
+function savePO(status){
+  const supplier=document.getElementById('po-supplier').value.trim();
+  if(!supplier){toast('Enter a supplier name');return;}
+  if(!poLines.some(l=>l.itemId)){toast('Add at least one line item');return;}
+  const assigneeId=parseInt(document.getElementById('po-assignee').value)||null;
+  const assignee=teamMembers.find(m=>m.id===assigneeId);
+  const supplierEmail=document.getElementById('po-supplier-email').value.trim();
+  const buyerEmail=document.getElementById('po-buyer-email').value.trim();
+  const lines=poLines.filter(l=>l.itemId).map(l=>{
+    const item=inventory.find(i=>i.id==l.itemId);
+    let dist={};
+    if(l.dist==='all'){const e=Math.floor(l.qty/3);const r=l.qty%3;dist={f52:e+(r>0?1:0),lunken:e+(r>1?1:0),northshore:e};}
+    else dist={f52:l.f52||0,lunken:l.lunken||0,northshore:l.northshore||0};
+    return{itemId:parseInt(l.itemId),itemName:item?.name||'',sku:item?.sku||'',qty:l.qty,unitCost:l.unitCost,lineCost:l.qty*l.unitCost,dist,received:{f52:0,lunken:0,northshore:0}};
+  });
+  const po={id:nextPOId++,supplier,supplierEmail,assigneeId,assigneeName:assignee?.name||'',buyerEmail,date:document.getElementById('po-date').value,expected:document.getElementById('po-expected').value,notes:document.getElementById('po-notes').value,lines,totalCost:lines.reduce((s,l)=>s+l.lineCost,0),totalUnits:lines.reduce((s,l)=>s+l.qty,0),status,destinations:[...new Set(lines.flatMap(l=>LOCS.filter(loc=>l.dist[loc]>0)))].map(l=>LOC_LABELS[l]).join(', ')};
+  purchaseOrders.push(po);poLines=[];
+  closeModal('po-modal');renderAll();toast(`PO #${po.id} saved — ${status}`);
+}
+function renderPOs(){
+  const sf=(document.getElementById('po-status-filter')||{}).value||'';
+  const pos=purchaseOrders.filter(p=>!sf||p.status===sf);
+  document.getElementById('po-tbody').innerHTML=pos.length===0
+    ?`<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--text-3)">No purchase orders yet. Use Reorder Alerts → Create POs By Brand.</td></tr>`
+    :pos.slice().reverse().map(p=>`<tr>
+        <td><span class="mono">#${p.id}</span></td>
+        <td style="font-weight:600">${p.supplier}</td>
+        <td>${p.assigneeName?`<span class="buyer-tag"><i class="ti ti-user" style="font-size:11px"></i>${p.assigneeName}</span>`:'<span style="color:var(--text-3);font-size:11px">—</span>'}</td>
+        <td style="text-align:center">${p.lines.length}</td>
+        <td style="text-align:center">${p.totalUnits}</td>
+        <td style="font-weight:600">${fmt(p.totalCost)}</td>
+        <td style="font-size:11px">${p.destinations||'—'}</td>
+        <td style="font-size:11px;color:var(--text-3)">${p.date||'—'}</td>
+        <td style="font-size:11px;color:var(--text-3)">${p.expected||'—'}</td>
+        <td><span class="badge badge-${p.status.toLowerCase()}">${p.status}</span></td>
+        <td>
+          <div style="display:flex;gap:5px;flex-wrap:nowrap">
+            <button class="btn btn-sm" onclick="openEmailPOModal(${p.id})" title="Email this PO"><i class="ti ti-mail"></i></button>
+            ${p.status!=='Received'?`<button class="btn btn-sm btn-green" onclick="openReceiveModal(${p.id})"><i class="ti ti-truck-delivery"></i>Receive</button>`:''}
+          </div>
+        </td>
+      </tr>`).join('');
+}
+
+// ── RECEIVE ───────────────────────────────────────────────────────
+function renderReceive(){
+  const open=purchaseOrders.filter(p=>p.status!=='Received');
+  document.getElementById('open-po-list').innerHTML=open.length===0
+    ?`<div style="padding:20px;text-align:center;color:var(--text-3);font-size:12px">No open purchase orders</div>`
+    :`<table><thead><tr><th>PO #</th><th>Brand</th><th>Units</th><th>Cost</th><th>Status</th><th></th></tr></thead><tbody>${open.map(p=>`<tr><td><span class="mono">#${p.id}</span></td><td style="font-weight:500">${p.supplier}</td><td style="text-align:center">${p.totalUnits}</td><td>${fmt(p.totalCost)}</td><td><span class="badge badge-${p.status.toLowerCase()}">${p.status}</span></td><td><button class="btn btn-sm btn-primary" onclick="openReceiveModal(${p.id})"><i class="ti ti-truck-delivery"></i></button></td></tr>`).join('')}</tbody></table>`;
+  document.getElementById('receive-tbody').innerHTML=receivingLog.length===0
+    ?`<tr><td colspan="6" style="text-align:center;padding:16px;color:var(--text-3)">No shipments received yet</td></tr>`
+    :receivingLog.slice().reverse().map(r=>`<tr><td><span class="mono">#${r.poId}</span></td><td>${r.itemName}</td><td>${LOC_LABELS[r.loc]}</td><td style="text-align:center">${r.qty}</td><td>${fmt(r.costValue)}</td><td style="font-size:11px;color:var(--text-3)">${r.date}</td></tr>`).join('');
+}
+function openReceiveModal(poId){
+  const po=purchaseOrders.find(p=>p.id===poId);if(!po)return;
+  receivingPOId=poId;
+  document.getElementById('receive-modal-title').textContent=`Receive — PO #${po.id} from ${po.supplier}`;
+  document.getElementById('receive-modal-info').textContent=`Expected ${po.expected||'—'} · ${po.totalUnits} units · ${fmt(po.totalCost)}`;
+  document.getElementById('receive-user').value='';
+  document.getElementById('receive-lines-wrap').innerHTML=po.lines.map((line,li)=>`
+    <div style="border:1px solid var(--border);border-radius:var(--r-sm);padding:11px;margin-bottom:8px">
+      <div style="font-weight:600;margin-bottom:7px">${line.itemName} <span style="font-size:11px;font-weight:400;color:var(--text-3)">· ${line.sku} · Ordered: ${line.qty} · ${fmt(line.unitCost)}/unit</span></div>
+      ${LOCS.filter(l=>line.dist[l]>0).map(l=>`
+        <div style="display:grid;grid-template-columns:140px 90px 90px 1fr;gap:8px;align-items:center;margin-bottom:4px;font-size:12px">
+          <span>${LOC_LABELS[l]}</span>
+          <span style="color:var(--text-3)">Ordered: ${line.dist[l]}</span>
+          <span style="color:var(--text-3)">Received: ${line.received[l]||0}</span>
+          <div style="display:flex;align-items:center;gap:6px"><label class="form-label" style="margin:0">Now:</label><input type="number" class="form-input" style="width:80px" id="recv-${li}-${l}" min="0" max="${line.dist[l]-(line.received[l]||0)}" value="${line.dist[l]-(line.received[l]||0)}"></div>
+        </div>`).join('')}
+    </div>`).join('');
+  document.getElementById('receive-modal').style.display='flex';
+}
+function confirmReceive(){
+  const po=purchaseOrders.find(p=>p.id===receivingPOId);if(!po)return;
+  const user=document.getElementById('receive-user').value.trim()||'Staff';
+  let any=false;
+  po.lines.forEach((line,li)=>{
+    LOCS.filter(l=>line.dist[l]>0).forEach(l=>{
+      const inp=document.getElementById(`recv-${li}-${l}`);if(!inp)return;
+      const qty=parseInt(inp.value)||0;if(qty<=0)return;
+      any=true;
+      const item=inventory.find(i=>i.id===line.itemId);
+      if(item){const before=item.qty[l]||0;item.qty[l]=before+qty;
+        logChange({user,type:'receive',itemId:item.id,itemName:item.name,loc:l,before,after:item.qty[l],reason:`Received from PO #${po.id} (${po.supplier})`});
+        queueSync(item,l);}
+      line.received[l]=(line.received[l]||0)+qty;
+      receivingLog.push({poId:po.id,itemName:line.itemName,loc:l,qty,costValue:qty*line.unitCost,date:today()});
+    });
+  });
+  if(!any){toast('Enter at least one quantity to receive');return;}
+  po.status=po.lines.every(l=>LOCS.every(loc=>l.received[loc]>=(l.dist[loc]||0)))?'Received':'Partial';
+  closeModal('receive-modal');renderAll();toast(`Shipment received — PO #${po.id} ${po.status}`);
+}
+
+// ── CYCLE COUNT ───────────────────────────────────────────────────
+function startCycleCount(){
+  const user=document.getElementById('count-user').value.trim();
+  const loc=document.getElementById('count-loc').value;
+  const cat=document.getElementById('count-cat').value;
+  if(!user){toast('Enter your name to start a count');return;}
+  const items=inventory.filter(i=>!cat||i.cat===cat);
+  if(!items.length){toast('No items match that filter');return;}
+  activeCountSession={user,loc,cat,items:items.map(i=>({id:i.id,name:i.name,brand:i.brand,cat:i.cat,sku:i.sku,systemQty:i.qty[loc]||0,countedQty:null})),startedAt:new Date().toISOString()};
+  document.getElementById('count-setup').style.display='none';
+  document.getElementById('count-session').style.display='block';
+  document.getElementById('count-review').style.display='none';
+  document.getElementById('count-session-title').textContent=`Count — ${LOC_LABELS[loc]}`;
+  document.getElementById('count-session-sub').textContent=`${user} · ${cat||'All Categories'}`;
+  renderCountItems();
+}
+function renderCountItems(){
+  const s=activeCountSession;
+  const counted=s.items.filter(i=>i.countedQty!==null).length;
+  const discs=s.items.filter(i=>i.countedQty!==null&&i.countedQty!==i.systemQty).length;
+  document.getElementById('count-progress-text').textContent=`${counted} of ${s.items.length} counted`;
+  document.getElementById('count-disc-text').textContent=`${discs} discrepanc${discs===1?'y':'ies'}`;
+  const pct=s.items.length>0?Math.round(counted/s.items.length*100):0;
+  document.getElementById('count-progress-bar').style.width=pct+'%';
+  document.getElementById('count-items-wrap').innerHTML=s.items.map((item,idx)=>{
+    const hasCounted=item.countedQty!==null;
+    const hasDisc=hasCounted&&item.countedQty!==item.systemQty;
+    const diff=hasCounted?item.countedQty-item.systemQty:null;
+    return`<div class="count-item-card${hasDisc?' has-disc':''}" id="count-card-${idx}">
+      <div class="count-item-name">${item.name}</div>
+      <div class="count-item-meta">${item.brand} · ${item.cat} · ${item.sku}</div>
+      <div class="count-input-row">
+        <div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:4px">Physical Count</div>
+          <input type="number" class="count-input-big" id="count-inp-${idx}" min="0"
+            value="${item.countedQty!==null?item.countedQty:''}"
+            placeholder="—"
+            oninput="updateCountItem(${idx},this.value)"
+            onfocus="this.select()">
+        </div>
+        <div class="count-system-val">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:4px">System</div>
+          <div style="font-size:22px;font-weight:600;color:var(--text-3)">${item.systemQty}</div>
+        </div>
+        ${hasCounted?`<div>
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:var(--text-3);margin-bottom:4px">Diff</div>
+          <div style="font-size:22px;font-weight:600;color:${diff>0?'var(--green)':diff<0?'var(--red)':'var(--green)'}">${diff>0?'+':''}${diff}</div>
+        </div>`:''}
+      </div>
+      ${hasDisc?`<div class="disc-banner"><i class="ti ti-alert-triangle"></i>Discrepancy — system says ${item.systemQty}, you counted ${item.countedQty}</div>`:''}
+      ${hasCounted&&!hasDisc?`<div class="disc-row-ok"><i class="ti ti-circle-check"></i>Matches system</div>`:''}
+    </div>`;
+  }).join('');
+}
+function updateCountItem(idx,val){
+  if(val===''||val===null){activeCountSession.items[idx].countedQty=null;}
+  else{activeCountSession.items[idx].countedQty=parseInt(val);}
+  renderCountItems();
+}
+function cancelCount(){
+  activeCountSession=null;
+  document.getElementById('count-setup').style.display='block';
+  document.getElementById('count-session').style.display='none';
+  document.getElementById('count-review').style.display='none';
+}
+function showCountReview(){
+  const s=activeCountSession;
+  const discItems=s.items.filter(i=>i.countedQty!==null&&i.countedQty!==i.systemQty);
+  document.getElementById('count-session').style.display='none';
+  document.getElementById('count-review').style.display='block';
+  if(discItems.length===0){
+    document.getElementById('count-review-no-disc').style.display='block';
+    document.getElementById('count-review-discs').innerHTML='';
+  } else {
+    document.getElementById('count-review-no-disc').style.display='none';
+    document.getElementById('count-review-discs').innerHTML=discItems.map((item,idx)=>{
+      const diff=item.countedQty-item.systemQty;
+      return`<div class="disc-review-card">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <div class="disc-review-item">${item.name}</div>
+          <label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;font-weight:500">
+            <input type="checkbox" id="disc-check-${idx}" checked style="width:16px;height:16px;cursor:pointer">
+            Apply this adjustment
+          </label>
+        </div>
+        <div class="disc-review-row">
+          <span class="disc-chip chip-system">System: ${item.systemQty}</span>
+          <i class="ti ti-arrow-right" style="color:var(--text-3)"></i>
+          <span class="disc-chip chip-counted">Counted: ${item.countedQty}</span>
+          <span class="disc-chip ${diff>0?'chip-diff-pos':'chip-diff-neg'}">${diff>0?'+':''}${diff}</span>
+        </div>
+        <div style="font-size:11px;color:var(--text-3)">${item.brand} · ${item.cat} · ${item.sku}</div>
+      </div>`;
+    }).join('');
+  }
+}
+function backToCount(){
+  document.getElementById('count-session').style.display='block';
+  document.getElementById('count-review').style.display='none';
+  renderCountItems();
+}
+function applyCountAdjustments(checkboxed){
+  const s=activeCountSession;
+  const discItems=s.items.filter(i=>i.countedQty!==null&&i.countedQty!==i.systemQty);
+  let applied=0;
+  discItems.forEach((item,idx)=>{
+    if(checkboxed){const cb=document.getElementById(`disc-check-${idx}`);if(!cb||!cb.checked)return;}
+    const invItem=inventory.find(i=>i.id===item.id);
+    if(!invItem)return;
+    const before=invItem.qty[s.loc]||0;
+    invItem.qty[s.loc]=item.countedQty;
+    logChange({user:s.user,type:'cycle',itemId:item.id,itemName:item.name,loc:s.loc,before,after:item.countedQty,reason:'Cycle count adjustment',notes:`Count session by ${s.user}`});
+    queueSync(invItem,s.loc);
+    applied++;
+  });
+  // Log the session
+  const session={id:countSessions.length+1,date:today(),user:s.user,loc:s.loc,cat:s.cat||'All',itemsCount:s.items.filter(i=>i.countedQty!==null).length,discCount:discItems.length,appliedCount:applied,status:applied>0?'Completed':'No Changes'};
+  countSessions.unshift(session);
+  activeCountSession=null;
+  document.getElementById('count-setup').style.display='block';
+  document.getElementById('count-session').style.display='none';
+  document.getElementById('count-review').style.display='none';
+  renderAll();
+  toast(applied>0?`Count complete — ${applied} adjustment${applied>1?'s':''} applied`:'Count complete — no changes needed');
+}
+function submitCountAll(){applyCountAdjustments(false);}
+function submitCountPartial(){applyCountAdjustments(true);}
+function renderCycleCountHistory(){
+  const tbody=document.getElementById('count-history-tbody');if(!tbody)return;
+  tbody.innerHTML=countSessions.length===0
+    ?`<tr><td colspan="6" style="text-align:center;padding:18px;color:var(--text-3)">No count sessions recorded yet</td></tr>`
+    :countSessions.map(s=>`<tr>
+        <td style="font-size:12px">${s.date}</td>
+        <td style="font-weight:500">${s.user}</td>
+        <td>${LOC_LABELS[s.loc]}</td>
+        <td style="text-align:center">${s.itemsCount}</td>
+        <td style="text-align:center"><span class="badge ${s.discCount>0?'badge-low':'badge-in'}">${s.discCount}</span></td>
+        <td><span class="badge badge-in">${s.status}</span></td>
+      </tr>`).join('');
+}
+
+// ── CHANGE LOG ───────────────────────────────────────────────────
+function renderChangeLog(){
+  const search=(document.getElementById('log-search')||{}).value||'';
+  const typeF=(document.getElementById('log-type-filter')||{}).value||'';
+  const locF=(document.getElementById('log-loc-filter')||{}).value||'';
+  const typeLabels={adjustment:'Adjustment',transfer:'Transfer',cycle:'Cycle Count',receive:'Received PO'};
+  const typeColors={adjustment:'badge-draft',transfer:'badge-partial',cycle:'badge-ordered',receive:'badge-received'};
+  const logs=changeLog.filter(l=>
+    (!search||(l.user+l.itemName+l.reason+l.notes).toLowerCase().includes(search.toLowerCase()))&&
+    (!typeF||l.type===typeF)&&(!locF||l.loc===locF));
+  document.getElementById('log-tbody').innerHTML=logs.length===0
+    ?`<tr><td colspan="9" style="text-align:center;padding:24px;color:var(--text-3)">No changes recorded yet. Adjustments, transfers, cycle counts, and received shipments all appear here.</td></tr>`
+    :logs.map(l=>`<tr style="border-left:3px solid transparent" class="log-row-${l.type}">
+        <td style="font-size:11.5px;white-space:nowrap">${l.ts}</td>
+        <td style="font-weight:600">${l.user}</td>
+        <td><span class="badge ${typeColors[l.type]||'badge-draft'}">${typeLabels[l.type]||l.type}</span></td>
+        <td style="font-weight:500">${l.itemName}</td>
+        <td style="font-size:12px">${LOC_LABELS[l.loc]||l.loc}</td>
+        <td style="text-align:center">${l.before}</td>
+        <td style="text-align:center;font-weight:600;color:${l.delta>0?'var(--green)':l.delta<0?'var(--red)':'var(--text-3)'}">${l.delta>0?'+':''}${l.delta}</td>
+        <td style="text-align:center">${l.after}</td>
+        <td style="font-size:11.5px;color:var(--text-2);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${l.reason}${l.notes?' · '+l.notes:''}</td>
+      </tr>`).join('');
+}
+function exportChangeLogCSV(){
+  let rows=[['Timestamp','User','Type','Item','Location','Before','Change','After','Reason']];
+  changeLog.forEach(l=>rows.push([l.ts,l.user,l.type,l.itemName,LOC_LABELS[l.loc]||l.loc,l.before,l.delta>0?'+'+l.delta:l.delta,l.after,l.reason]));
+  downloadCSV(rows,'lodge-locker-change-log-'+new Date().toISOString().slice(0,10)+'.csv');
+  toast('Change log exported');
+}
+
+// ── INSIGHTS ─────────────────────────────────────────────────────
+function renderInsights(){
+  const loc=insightsLoc,period=insightsPeriod;
+  const periodLabel={week:'This Week',month:'This Month',quarter:'This Quarter'}[period];
+  const prevLabel={week:'vs. Last Week',month:'vs. Last Month',quarter:'vs. Last Quarter'}[period];
+  const totalRevCur=inventory.reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,true),0);
+  const totalRevPrev=inventory.reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,false),0);
+  const totalUnitsCur=inventory.reduce((s,i)=>s+getSalesForPeriod(i,loc,period,true),0);
+  const totalUnitsPrev=inventory.reduce((s,i)=>s+getSalesForPeriod(i,loc,period,false),0);
+  const revDelta=totalRevPrev>0?((totalRevCur-totalRevPrev)/totalRevPrev*100):0;
+  const unitsDelta=totalUnitsPrev>0?((totalUnitsCur-totalUnitsPrev)/totalUnitsPrev*100):0;
+  const catRevs=CATS.map(cat=>{const items=inventory.filter(i=>i.cat===cat);return{cat,rev:items.reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,true),0)};}).sort((a,b)=>b.rev-a.rev);
+  const topCat=catRevs[0];
+  document.getElementById('insights-kpis').innerHTML=`
+    <div class="metric-card"><div class="metric-label">${periodLabel} Revenue</div><div class="metric-value">${fmt(totalRevCur)}</div><div class="metric-sub" style="display:flex;align-items:center;gap:5px;margin-top:5px"><span class="${trendClass(revDelta)}">${trendIcon(revDelta)} ${Math.abs(revDelta).toFixed(1)}%</span><span>${prevLabel}</span></div></div>
+    <div class="metric-card"><div class="metric-label">${periodLabel} Units Sold</div><div class="metric-value">${fmtN(totalUnitsCur)}</div><div class="metric-sub" style="display:flex;align-items:center;gap:5px;margin-top:5px"><span class="${trendClass(unitsDelta)}">${trendIcon(unitsDelta)} ${Math.abs(unitsDelta).toFixed(1)}%</span><span>${prevLabel}</span></div></div>
+    <div class="metric-card"><div class="metric-label">Top Category</div><div class="metric-value" style="font-size:18px">${CAT_ICONS[topCat.cat]} ${topCat.cat}</div><div class="metric-sub">${fmt(topCat.rev)} this period</div></div>
+    <div class="metric-card"><div class="metric-label">Avg Revenue / Unit</div><div class="metric-value">${fmt(totalRevCur/Math.max(1,totalUnitsCur))}</div><div class="metric-sub">per unit sold</div></div>`;
+  const locLabel=loc==='all'?'All Locations':LOC_LABELS[loc];
+  document.getElementById('top10-title').textContent=`Top 10 Best Sellers — ${locLabel}`;
+  const ranked=inventory.map(i=>({...i,salesRev:getSalesRevForPeriod(i,loc,period,true),salesUnits:getSalesForPeriod(i,loc,period,true)})).sort((a,b)=>b.salesRev-a.salesRev).slice(0,10);
+  const maxRev=ranked[0]?.salesRev||1;
+  document.getElementById('top10-list').innerHTML=ranked.map((item,idx)=>`
+    <div class="top-seller-row">
+      <div class="top-seller-rank ${idx===0?'gold':idx===1?'silver':idx===2?'bronze':''}">${idx+1}</div>
+      <div class="item-img" style="width:28px;height:28px;font-size:14px">${itemImg(item)}</div>
+      <div style="flex:1;min-width:0">
+        <div style="font-weight:500;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${item.name}</div>
+        <div style="font-size:10.5px;color:var(--text-3)">${item.cat} · ${fmtN(item.salesUnits)} units</div>
+        <div class="loc-bar-track" style="margin-top:4px"><div class="loc-bar-fill" style="width:${Math.round(item.salesRev/maxRev*100)}%;background:${CAT_COLORS[item.cat]||'var(--navy)'}"></div></div>
+      </div>
+      <div style="font-size:12.5px;font-weight:600;color:var(--navy)">${fmt(item.salesRev)}</div>
+    </div>`).join('');
+  const maxCatRev=catRevs[0]?.rev||1;
+  document.getElementById('cat-performance').innerHTML=catRevs.map(({cat,rev})=>{
+    const prevRev=inventory.filter(i=>i.cat===cat).reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,false),0);
+    return`<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;font-size:11.5px">
+      <div style="width:72px;flex-shrink:0;color:var(--text-2)">${CAT_ICONS[cat]} ${cat}</div>
+      <div style="flex:1;height:6px;border-radius:3px;background:#e5e7ef;overflow:hidden"><div style="height:100%;border-radius:3px;width:${Math.round(rev/maxCatRev*100)}%;background:${CAT_COLORS[cat]}"></div></div>
+      <div style="width:52px;text-align:right;font-weight:500">${fmt(rev)}</div>
+      <div style="width:66px;text-align:right">${compareBadge(rev,prevRev)}</div>
+    </div>`;
+  }).join('');
+  const locSection=document.getElementById('loc-compare-section');
+  if(loc!=='all'){locSection.style.display='none';}
+  else{
+    locSection.style.display='block';
+    const locNameClasses={f52:'#3a6b1a',lunken:'#b03c1a',northshore:'#1a6880'};
+    document.getElementById('loc-compare-cards').innerHTML=LOCS.map(l=>{
+      const locRevCur=inventory.reduce((s,i)=>s+getSalesRevForPeriod(i,l,period,true),0);
+      const locRevPrev=inventory.reduce((s,i)=>s+getSalesRevForPeriod(i,l,period,false),0);
+      const locDelta=locRevPrev>0?((locRevCur-locRevPrev)/locRevPrev*100):0;
+      const mo=new Date().getMonth();
+      const sparkData=inventory.reduce((arr,item)=>{const sales=item.sales[l]||Array(12).fill(0);for(let i=0;i<6;i++)arr[i]=(arr[i]||0)+(sales[Math.max(0,mo-5+i)]||0)*item.retail;return arr;},[0,0,0,0,0,0]);
+      const maxSpark=Math.max(...sparkData)||1;
+      return`<div class="card card-pad" style="margin-bottom:0">
+        <div style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:${locNameClasses[l]};margin-bottom:6px">${LOC_LABELS[l]}</div>
+        <div style="font-size:20px;font-weight:600;color:var(--navy)">${fmt(locRevCur)}</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:3px"><span class="${trendClass(locDelta)}" style="font-size:11.5px">${trendIcon(locDelta)} ${Math.abs(locDelta).toFixed(1)}%</span><span style="font-size:11px;color:var(--text-3)">${prevLabel}</span></div>
+        <div style="display:flex;align-items:flex-end;gap:3px;height:40px;margin-top:8px">${sparkData.map((v,i)=>`<div style="flex:1;border-radius:2px 2px 0 0;min-height:3px;height:${Math.max(8,Math.round(v/maxSpark*36))}px;background:${i===5?LOC_COLORS[l]:'#d8dcf0'}"></div>`).join('')}</div>
+        <div style="font-size:10px;color:var(--text-3);margin-top:4px">Last 6 months</div>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('cat-trend-table').innerHTML=`<table><thead><tr><th>Category</th><th style="text-align:right">${periodLabel}</th><th style="text-align:right">Prev. Period</th><th style="text-align:right">Change</th><th style="text-align:right">Units ${periodLabel}</th><th style="text-align:right">Units Prev.</th></tr></thead><tbody>${CATS.map(cat=>{
+    const items=inventory.filter(i=>i.cat===cat);
+    const revCur=items.reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,true),0);
+    const revPrev=items.reduce((s,i)=>s+getSalesRevForPeriod(i,loc,period,false),0);
+    const unitsCur=items.reduce((s,i)=>s+getSalesForPeriod(i,loc,period,true),0);
+    const unitsPrev=items.reduce((s,i)=>s+getSalesForPeriod(i,loc,period,false),0);
+    return`<tr><td><span style="font-size:15px">${CAT_ICONS[cat]}</span> <strong>${cat}</strong></td><td style="text-align:right;font-weight:600">${fmt(revCur)}</td><td style="text-align:right;color:var(--text-2)">${fmt(revPrev)}</td><td style="text-align:right">${compareBadge(revCur,revPrev)}</td><td style="text-align:right;font-weight:600">${fmtN(unitsCur)}</td><td style="text-align:right;color:var(--text-2)">${fmtN(unitsPrev)}</td></tr>`;
+  }).join('')}</tbody></table>`;
+}
+
+// ── REPORTS ──────────────────────────────────────────────────────
+function renderReports(){
+  const items=inventory,loc=currentLoc,locsToShow=loc==='all'?LOCS:[loc];
+  const tC=items.reduce((s,i)=>s+getQty(i,loc)*i.cost,0);
+  const tR=items.reduce((s,i)=>s+getQty(i,loc)*i.retail,0);
+  const margin=tR>0?(tR-tC)/tR*100:0;
+  const units=items.reduce((s,i)=>s+getQty(i,loc),0);
+  document.getElementById('report-metrics').innerHTML=`
+    <div class="metric-card"><div class="metric-label">Total Units</div><div class="metric-value">${units}</div></div>
+    <div class="metric-card"><div class="metric-label">Cost Value</div><div class="metric-value">${fmt(tC)}</div></div>
+    <div class="metric-card"><div class="metric-label">Retail Value</div><div class="metric-value">${fmt(tR)}</div></div>
+    <div class="metric-card"><div class="metric-label">Blended Margin</div><div class="metric-value">${margin.toFixed(1)}%</div></div>`;
+  let html='';
+  if(reportView==='matrix'){
+    let h=`<table class="vm-table"><thead><tr><th>Category</th>${locsToShow.map(l=>`<th>${LOC_LABELS[l]} Cost</th><th>${LOC_LABELS[l]} Retail</th>`).join('')}${locsToShow.length>1?'<th>Total Cost</th><th>Total Retail</th>':''}</tr></thead><tbody>`;
+    let gC=0,gR=0;
+    CATS.forEach(cat=>{const ci=items.filter(i=>i.cat===cat);let rC=0,rR=0,cells='';locsToShow.forEach(l=>{const cv=ci.reduce((s,i)=>s+i.cost*(i.qty[l]||0),0),rv=ci.reduce((s,i)=>s+i.retail*(i.qty[l]||0),0);rC+=cv;rR+=rv;gC+=cv;gR+=rv;cells+=`<td>${fmt(cv)}</td><td>${fmt(rv)}</td>`;});h+=`<tr><td style="font-weight:600">${CAT_ICONS[cat]||''} ${cat}</td>${cells}${locsToShow.length>1?`<td style="font-weight:600">${fmt(rC)}</td><td style="font-weight:600">${fmt(rR)}</td>`:''}</tr>`;});
+    h+=`</tbody><tfoot><tr class="tr-total"><td>Total</td>${locsToShow.map(l=>{const cv=items.reduce((s,i)=>s+i.cost*(i.qty[l]||0),0),rv=items.reduce((s,i)=>s+i.retail*(i.qty[l]||0),0);return`<td>${fmt(cv)}</td><td>${fmt(rv)}</td>`;}).join('')}${locsToShow.length>1?`<td>${fmt(gC)}</td><td>${fmt(gR)}</td>`:''}</tr></tfoot></table>`;html=h;
+  }else if(reportView==='bylocation'){
+    html=`<table class="vm-table"><thead><tr><th>Location</th><th>Units</th><th>Cost Value</th><th>Retail Value</th><th>Margin</th></tr></thead><tbody>${LOCS.map(l=>{const q=items.reduce((s,i)=>s+(i.qty[l]||0),0),cv=items.reduce((s,i)=>s+i.cost*(i.qty[l]||0),0),rv=items.reduce((s,i)=>s+i.retail*(i.qty[l]||0),0);return`<tr><td style="font-weight:600">${LOC_LABELS[l]}</td><td style="text-align:center">${q}</td><td>${fmt(cv)}</td><td>${fmt(rv)}</td><td>${pct(cv,rv)}</td></tr>`;}).join('')}</tbody><tfoot><tr class="tr-total"><td>Total</td><td style="text-align:center">${units}</td><td>${fmt(tC)}</td><td>${fmt(tR)}</td><td>${margin.toFixed(1)}%</td></tr></tfoot></table>`;
+  }else if(reportView==='bycategory'){
+    html=`<table class="vm-table"><thead><tr><th>Category</th><th>Units</th><th>Cost Value</th><th>Retail Value</th><th>Margin</th></tr></thead><tbody>${CATS.map(cat=>{const ci=items.filter(i=>i.cat===cat);const q=ci.reduce((s,i)=>s+getQty(i,loc),0),cv=ci.reduce((s,i)=>s+getQty(i,loc)*i.cost,0),rv=ci.reduce((s,i)=>s+getQty(i,loc)*i.retail,0);return`<tr><td style="font-weight:600">${CAT_ICONS[cat]||''} ${cat}</td><td style="text-align:center">${q}</td><td>${fmt(cv)}</td><td>${fmt(rv)}</td><td>${pct(cv,rv)}</td></tr>`;}).join('')}</tbody><tfoot><tr class="tr-total"><td>Total</td><td style="text-align:center">${units}</td><td>${fmt(tC)}</td><td>${fmt(tR)}</td><td>${margin.toFixed(1)}%</td></tr></tfoot></table>`;
+  }else{
+    const rows=[];items.forEach(i=>locsToShow.forEach(l=>{const qty=i.qty[l]||0,cv=qty*i.cost,rv=qty*i.retail;rows.push({img:itemImg(i),name:i.name,cat:i.cat,loc:LOC_LABELS[l],qty,uc:i.cost,ur:i.retail,cv,rv,m:rv>0?(rv-cv)/rv*100:0});}));
+    const totCV=rows.reduce((s,r)=>s+r.cv,0),totRV=rows.reduce((s,r)=>s+r.rv,0);
+    html=`<table><thead><tr><th>Item</th><th>Category</th><th>Location</th><th>Qty</th><th>Unit Cost</th><th>Unit Retail</th><th>Cost Value</th><th>Retail Value</th><th>Margin</th></tr></thead><tbody>${rows.map(r=>`<tr><td><div class="item-info"><div class="item-img">${r.img}</div><span class="item-name">${r.name}</span></div></td><td style="font-size:11px;color:var(--text-2)">${r.cat}</td><td style="font-size:11px">${r.loc}</td><td style="text-align:center">${r.qty}</td><td>${fmt(r.uc)}</td><td>${fmt(r.ur)}</td><td>${fmt(r.cv)}</td><td>${fmt(r.rv)}</td><td>${r.m.toFixed(1)}%</td></tr>`).join('')}</tbody><tfoot><tr style="font-weight:600;background:#f4f5f8"><td colspan="6" style="padding:9px 12px">Totals</td><td style="padding:9px 12px">${fmt(totCV)}</td><td style="padding:9px 12px">${fmt(totRV)}</td><td style="padding:9px 12px">${pct(totCV,totRV)}</td></tr></tfoot></table>`;
+  }
+  document.getElementById('report-body').innerHTML=`<div class="card" style="overflow-x:auto">${html}</div>`;
+}
+
+// ── COURTRESERVE ─────────────────────────────────────────────────
+function renderCR(){
+  document.getElementById('cr-status-list').innerHTML=LOCS.map(l=>{const cfg=crConfig[l],hasKey=cfg.apiKey&&cfg.orgId;const dotClass=hasKey&&cfg.status==='connected'?'cr-dot-green':cfg.status==='error'?'cr-dot-red':'cr-dot-amber';const label=hasKey?(cfg.status==='connected'?'Connected':'Not Tested'):'Not Configured';return`<div class="cr-row"><div style="display:flex;align-items:center;gap:10px"><div class="cr-dot ${dotClass}"></div><div><div style="font-weight:600;font-size:13px">${LOC_LABELS[l]}</div><div style="font-size:11px;color:var(--text-3)">${hasKey?'Org: '+cfg.orgId:'No credentials configured'}</div></div></div><div style="display:flex;align-items:center;gap:7px"><span class="badge ${hasKey&&cfg.status==='connected'?'badge-in':'badge-draft'}">${label}</span>${pendingSync.filter(p=>p.loc===l).length?`<span class="badge badge-ordered">${pendingSync.filter(p=>p.loc===l).length} pending</span>`:''}</div></div>`;}).join('');
+  const logEl=document.getElementById('sync-log');
+  if(!syncLogs.length){logEl.innerHTML=`<div style="color:var(--text-3);font-size:12px;text-align:center;padding:14px">No sync activity yet</div>`;return;}
+  logEl.innerHTML=syncLogs.slice().reverse().slice(0,14).map(e=>`<div style="padding:7px 0;border-bottom:1px solid var(--border)"><div style="display:flex;justify-content:space-between"><span style="font-weight:600">${e.action}</span><span style="font-size:10px;color:var(--text-3)">${e.time}</span></div><div style="font-size:11px;color:${e.ok?'var(--green)':'var(--red)'}">${e.msg}</div></div>`).join('');
+}
+function loadCRConfig(){const l=document.getElementById('cr-loc').value,cfg=crConfig[l];document.getElementById('cr-org-id').value=cfg.orgId||'';document.getElementById('cr-api-key').value=cfg.apiKey||'';document.getElementById('cr-base-url').value=cfg.baseUrl||'https://app.courtreserve.com/api/v1';document.getElementById('cr-img-sync').value=cfg.imgSync||'Pull From CourtReserve On Connect';document.getElementById('cr-sync-freq').value=cfg.freq||'On Every Adjustment';}
+function saveCRConfig(){const l=document.getElementById('cr-loc').value;crConfig[l]={orgId:document.getElementById('cr-org-id').value.trim(),apiKey:document.getElementById('cr-api-key').value.trim(),baseUrl:document.getElementById('cr-base-url').value.trim(),imgSync:document.getElementById('cr-img-sync').value,freq:document.getElementById('cr-sync-freq').value,status:'pending'};renderCR();toast('Credentials saved for '+LOC_LABELS[l]);}
+function testAllCR(){LOCS.forEach(l=>{const cfg=crConfig[l];if(!cfg.apiKey||!cfg.orgId){addSyncLog(l,'Connection Test','No credentials for '+LOC_LABELS[l],false);return;}setTimeout(()=>{crConfig[l].status='error';addSyncLog(l,'Connection Test',`${LOC_LABELS[l]}: 401 Unauthorized — credentials reach CR server but CORS blocks browser requests. A backend proxy (Supabase Edge Function) is required for live sync.`,false);renderCR();},600+Math.random()*400);});toast('Testing connections…');}
+function syncAll(){if(!pendingSync.length){toast('No pending changes to sync');return;}pendingSync.forEach(p=>{const cfg=crConfig[p.loc];if(!cfg.apiKey){addSyncLog(p.loc,'Sync Skipped','No credentials for '+LOC_LABELS[p.loc],false);return;}addSyncLog(p.loc,'Sync Queued',`${LOC_LABELS[p.loc]}: ${p.name} — qty ${p.qty} (awaiting backend proxy)`,true);});pendingSync=[];renderCR();toast('Changes queued for sync');}
+function addSyncLog(loc,action,msg,ok){syncLogs.push({loc,action,msg,ok,time:new Date().toLocaleTimeString()});renderCR();}
+function queueSync(item,loc){pendingSync=pendingSync.filter(p=>!(p.itemId===item.id&&p.loc===loc));pendingSync.push({itemId:item.id,loc,name:item.name,qty:item.qty[loc],crId:item.crId});}
+
+// ── ITEM MODAL ────────────────────────────────────────────────────
+function openAddModal(){editId=null;document.getElementById('item-modal-title').textContent='Add New Item';['f-name','f-sku','f-brand','f-cost','f-retail','f-f52','f-lunken','f-northshore','f-cr-id','f-img-url'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-threshold').value='3';document.getElementById('f-reorder-qty').value='6';document.getElementById('item-modal').style.display='flex';}
+function openEditModal(id){editId=id;const i=inventory.find(x=>x.id===id);if(!i)return;document.getElementById('item-modal-title').textContent='Edit Item';document.getElementById('f-name').value=i.name;document.getElementById('f-sku').value=i.sku;document.getElementById('f-cat').value=i.cat;document.getElementById('f-brand').value=i.brand;document.getElementById('f-cost').value=i.cost;document.getElementById('f-retail').value=i.retail;document.getElementById('f-f52').value=i.qty.f52;document.getElementById('f-lunken').value=i.qty.lunken;document.getElementById('f-northshore').value=i.qty.northshore;document.getElementById('f-threshold').value=i.threshold;document.getElementById('f-reorder-qty').value=i.reorderQty||6;document.getElementById('f-cr-id').value=i.crId||'';document.getElementById('f-img-url').value=i.imgUrl||'';document.getElementById('item-modal').style.display='flex';}
+function saveItem(){
+  const name=document.getElementById('f-name').value.trim(),sku=document.getElementById('f-sku').value.trim();
+  if(!name||!sku){toast('Name and SKU are required');return;}
+  const item={id:editId||nextId++,name,sku,cat:document.getElementById('f-cat').value,brand:document.getElementById('f-brand').value.trim()||'Unknown',cost:parseFloat(document.getElementById('f-cost').value)||0,retail:parseFloat(document.getElementById('f-retail').value)||0,qty:{f52:parseInt(document.getElementById('f-f52').value)||0,lunken:parseInt(document.getElementById('f-lunken').value)||0,northshore:parseInt(document.getElementById('f-northshore').value)||0},threshold:parseInt(document.getElementById('f-threshold').value)||3,reorderQty:parseInt(document.getElementById('f-reorder-qty').value)||6,crId:document.getElementById('f-cr-id').value.trim(),imgUrl:document.getElementById('f-img-url').value.trim(),sales:{f52:Array(12).fill(0),lunken:Array(12).fill(0),northshore:Array(12).fill(0)}};
+  if(editId){const idx=inventory.findIndex(i=>i.id===editId);item.sales=inventory[idx].sales||item.sales;inventory[idx]=item;}
+  else inventory.push(item);
+  LOCS.forEach(l=>queueSync(item,l));
+  closeModal('item-modal');renderAll();toast(editId?'Item updated':'Item added');
+}
+
+
+// ── TEAM MEMBERS ─────────────────────────────────────────────────
+function openTeamModal(){
+  renderTeamList();
+  renderTeamCatToggles();
+  document.getElementById('team-modal').style.display='flex';
+}
+function renderTeamList(){
+  document.getElementById('team-list-wrap').innerHTML=teamMembers.length===0
+    ?`<div style="color:var(--text-3);font-size:12px;text-align:center;padding:12px">No team members yet</div>`
+    :teamMembers.map(m=>`
+      <div class="team-member-row">
+        <div>
+          <div style="font-weight:600;font-size:13px">${m.name} <span style="font-size:11px;font-weight:400;color:var(--text-3)">(${m.role})</span></div>
+          <div style="font-size:11.5px;color:var(--text-2);margin-top:1px">${m.email}</div>
+          <div style="margin-top:5px">${m.cats.length?m.cats.map(c=>`<span class="cat-chip">${CAT_ICONS[c]||''} ${c}</span>`).join(''):'<span style="color:var(--text-3);font-size:11px">No categories assigned</span>'}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeTeamMember(${m.id})"><i class="ti ti-trash"></i></button>
+      </div>`).join('');
+}
+function renderTeamCatToggles(){
+  const wrap=document.getElementById('tm-cat-wrap');if(!wrap)return;
+  wrap.innerHTML=CATS.map(c=>`<button class="cat-toggle" id="tmt-${c}" onclick="toggleTMCat('${c}')">${CAT_ICONS[c]||''} ${c}</button>`).join('');
+}
+function toggleTMCat(cat){
+  const btn=document.getElementById('tmt-'+cat);
+  btn.classList.toggle('on');
+}
+function addTeamMember(){
+  const name=document.getElementById('tm-name').value.trim();
+  const email=document.getElementById('tm-email').value.trim();
+  const role=document.getElementById('tm-role').value;
+  if(!name){toast('Enter a name');return;}
+  const cats=CATS.filter(c=>document.getElementById('tmt-'+c)?.classList.contains('on'));
+  teamMembers.push({id:nextTeamId++,name,email,role,cats});
+  document.getElementById('tm-name').value='';
+  document.getElementById('tm-email').value='';
+  CATS.forEach(c=>{const b=document.getElementById('tmt-'+c);if(b)b.classList.remove('on');});
+  renderTeamList();
+  toast(name+' added to team');
+}
+function removeTeamMember(id){
+  teamMembers=teamMembers.filter(m=>m.id!==id);
+  renderTeamList();
+  toast('Team member removed');
+}
+
+// ── EMAIL PO ──────────────────────────────────────────────────────
+function openEmailPOModal(poId){
+  const po=purchaseOrders.find(p=>p.id===poId);if(!po)return;
+  emailingPOId=poId;
+  // Build preview header
+  document.getElementById('email-po-preview-header').innerHTML=`
+    <div style="display:flex;gap:24px;flex-wrap:wrap">
+      <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3)">PO #</div><div style="font-weight:600">#${po.id}</div></div>
+      <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3)">Supplier</div><div style="font-weight:600">${po.supplier}</div></div>
+      <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3)">Total</div><div style="font-weight:600">${fmt(po.totalCost)}</div></div>
+      <div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3)">Lines</div><div>${po.lines.length} items · ${po.totalUnits} units</div></div>
+      ${po.assigneeName?`<div><div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-3)">Buyer</div><div>${po.assigneeName}</div></div>`:''}
+    </div>`;
+  document.getElementById('email-to').value=po.supplierEmail||'';
+  document.getElementById('email-cc').value=po.buyerEmail||'';
+  document.getElementById('email-subject').value=`Purchase Order #${po.id} — The Pickle Lodge`;
+  document.getElementById('email-body').value=buildPOEmailBody(po);
+  document.getElementById('email-po-modal').style.display='flex';
+}
+function buildPOEmailBody(po){
+  const lineRows=po.lines.map(l=>{
+    const distParts=LOCS.filter(loc=>l.dist[loc]>0).map(loc=>`${LOC_LABELS[loc]}: ${l.dist[loc]}`).join(', ');
+    return `  ${l.itemName.padEnd(32)} ${l.sku.padEnd(14)} Qty: ${String(l.qty).padStart(3)}  @${fmt(l.unitCost).padStart(8)}  = ${fmt(l.lineCost).padStart(10)}
+    Destination: ${distParts}`;
+  }).join('
+
+');
+  return `Hello ${po.supplier} Team,
+
+Please process the following purchase order for The Pickle Lodge:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PURCHASE ORDER #${po.id}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Date:            ${po.date||'—'}
+Expected By:     ${po.expected||'TBD'}
+Buyer:           ${po.assigneeName||'—'}
+Destinations:    ${po.destinations||'—'}
+
+LINE ITEMS:
+─────────────────────────────────────────────────
+${lineRows}
+─────────────────────────────────────────────────
+TOTAL:           ${fmt(po.totalCost)} (${po.totalUnits} units)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+${po.notes?'Notes: '+po.notes+'
+
+':''}Please confirm receipt of this order and provide tracking once shipped.
+
+Ship to (please confirm per-location addresses with our buyer):
+  • Factory 52 — Cincinnati, OH
+  • Lunken Landing — Cincinnati, OH
+  • North Shore — Cincinnati, OH
+
+Thank you,
+${po.assigneeName||'The Pickle Lodge Buying Team'}
+The Pickle Lodge
+`;
+}
+function copyPOEmailBody(){
+  const body=document.getElementById('email-body').value;
+  navigator.clipboard.writeText(body).then(()=>toast('Email body copied to clipboard')).catch(()=>{
+    document.getElementById('email-body').select();document.execCommand('copy');toast('Copied!');
+  });
+}
+function openMailto(){
+  const to=encodeURIComponent(document.getElementById('email-to').value);
+  const cc=encodeURIComponent(document.getElementById('email-cc').value);
+  const subj=encodeURIComponent(document.getElementById('email-subject').value);
+  const body=encodeURIComponent(document.getElementById('email-body').value);
+  const mailto=`mailto:${to}?cc=${cc}&subject=${subj}&body=${body}`;
+  window.location.href=mailto;
+  toast('Opening your mail app…');
+}
+
+// ── TEAM TAB ─────────────────────────────────────────────────────
+function renderTeamTab(){
+  // Team list
+  const listEl=document.getElementById('team-tab-list');
+  if(!listEl)return;
+  listEl.innerHTML=teamMembers.length===0
+    ?`<div style="padding:18px;text-align:center;color:var(--text-3);font-size:12px">No team members yet. Add one on the right.</div>`
+    :`<table><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Categories</th><th></th></tr></thead><tbody>${teamMembers.map(m=>`
+      <tr>
+        <td style="font-weight:600">${m.name}</td>
+        <td><span class="badge badge-draft">${m.role}</span></td>
+        <td style="font-size:11.5px;color:var(--text-2)">${m.email||'—'}</td>
+        <td>${m.cats.length?m.cats.map(c=>`<span class="cat-chip">${CAT_ICONS[c]||''} ${c}</span>`).join(''):'<span style="color:var(--text-3);font-size:11px">None</span>'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="removeTeamMember(${m.id});renderTeamTab()"><i class="ti ti-trash"></i></button></td>
+      </tr>`).join('')}</tbody></table>`;
+
+  // Category → buyer map
+  const mapEl=document.getElementById('cat-buyer-map');
+  if(!mapEl)return;
+  mapEl.innerHTML=CATS.map(cat=>{
+    const buyers=teamMembers.filter(m=>m.cats.includes(cat));
+    return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)">
+      <div style="font-weight:500">${CAT_ICONS[cat]||''} ${cat}</div>
+      <div>${buyers.length?buyers.map(b=>`<span class="buyer-tag"><i class="ti ti-user" style="font-size:11px"></i>${b.name}</span>`).join(' '):'<span style="color:var(--text-3);font-size:11px">Unassigned</span>'}</div>
+    </div>`;
+  }).join('')+'<div style="padding-top:6px;font-size:11px;color:var(--text-3)">Buyers are auto-assigned when creating brand POs</div>';
+
+  // Render cat toggles for the add form
+  const catWrap=document.getElementById('tab-tm-cat-wrap');
+  if(catWrap&&!catWrap.children.length){
+    catWrap.innerHTML=CATS.map(c=>`<button class="cat-toggle" id="tab-tmt-${c}" onclick="document.getElementById('tab-tmt-${c}').classList.toggle('on')">${CAT_ICONS[c]||''} ${c}</button>`).join('');
+  }
+}
+function addTeamMemberTab(){
+  const name=document.getElementById('tab-tm-name').value.trim();
+  const email=document.getElementById('tab-tm-email').value.trim();
+  const role=document.getElementById('tab-tm-role').value;
+  if(!name){toast('Enter a name');return;}
+  const cats=CATS.filter(c=>document.getElementById('tab-tmt-'+c)?.classList.contains('on'));
+  teamMembers.push({id:nextTeamId++,name,email,role,cats});
+  document.getElementById('tab-tm-name').value='';
+  document.getElementById('tab-tm-email').value='';
+  CATS.forEach(c=>{const b=document.getElementById('tab-tmt-'+c);if(b)b.classList.remove('on');});
+  renderTeamTab();
+  toast(name+' added to team');
+}
+
+// ── EXPORTS ───────────────────────────────────────────────────────
+function exportReportCSV(){const items=inventory,loc=currentLoc,locsToShow=loc==='all'?LOCS:[loc];let rows=[['Item','Category','SKU','Brand','Location','Qty','Unit Cost','Unit Retail','Cost Value','Retail Value','Margin %']];items.forEach(i=>locsToShow.forEach(l=>{const qty=i.qty[l]||0,cv=qty*i.cost,rv=qty*i.retail;rows.push([i.name,i.cat,i.sku,i.brand,LOC_LABELS[l],qty,i.cost.toFixed(2),i.retail.toFixed(2),cv.toFixed(2),rv.toFixed(2),rv>0?((rv-cv)/rv*100).toFixed(1)+'%':'0%']);}));downloadCSV(rows,'lodge-locker-value-report-'+new Date().toISOString().slice(0,10)+'.csv');toast('Report exported');}
+function exportReorderCSV(){const items=getReorderItems();let rows=[['Item','Brand','Category','SKU','Factory 52','Lunken Landing','North Shore','Threshold','Suggested Qty','Unit Cost','Est. Total Cost']];items.forEach(i=>rows.push([i.name,i.brand,i.cat,i.sku,i.qty.f52||0,i.qty.lunken||0,i.qty.northshore||0,i.threshold,i.suggested,i.cost.toFixed(2),(i.suggested*i.cost).toFixed(2)]));downloadCSV(rows,'lodge-locker-reorder-'+new Date().toISOString().slice(0,10)+'.csv');toast('Reorder list exported');}
+function downloadCSV(rows,filename){const csv=rows.map(r=>r.map(c=>`"${c}"`).join(',')).join('\n');const a=document.createElement('a');a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);a.download=filename;a.click();}
+
+// ── MISC ──────────────────────────────────────────────────────────
+function closeModal(id){document.getElementById(id).style.display='none';}
+function populateItemSelects(){['xfer-item','adj-item'].forEach(id=>{const sel=document.getElementById(id);if(!sel)return;const cur=sel.value;sel.innerHTML='<option value="">Select Item…</option>'+inventory.map(i=>`<option value="${i.id}">${i.name}</option>`).join('');sel.value=cur;});}
+
+// ── INIT ──────────────────────────────────────────────────────────
+loadCRConfig();
+renderAll();
+</script>
+</body>
+</html>
