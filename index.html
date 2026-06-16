@@ -690,10 +690,15 @@ async function handleLogin() {
 
   if (!pw) { errEl.textContent = 'Enter your password'; return; }
   btn.disabled = true; btn.textContent = 'Signing in…';
-  const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
-  btn.disabled = false; btn.textContent = 'Sign In';
-  if (error) { errEl.textContent = error.message; return; }
-  // onAuthStateChange will fire and load the app
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email, password: pw });
+    btn.disabled = false; btn.textContent = 'Sign In';
+    if (error) { errEl.textContent = error.message; return; }
+    // onAuthStateChange will fire and load the app
+  } catch (e) {
+    btn.disabled = false; btn.textContent = 'Sign In';
+    errEl.textContent = 'Network error — check your internet connection and try again. (' + e.message + ')';
+  }
 }
 
 async function handleSignOut() {
