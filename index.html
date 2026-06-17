@@ -1621,6 +1621,7 @@ async function handleXLSXUpload(input) {
         const catL = (crCat||'').toLowerCase();
         const nameL = (name||'').toLowerCase();
         if (SKIP.some(s => catL.includes(s) || nameL.includes(s))) return null;
+        if (['discontinued','beverages','interclub fees',"nature's willow"].some(s => catL.includes(s))) return null;
         if (CAT_MAP[catL]) return CAT_MAP[catL];
         if (PADDLE_KEYWORDS.some(k => nameL.includes(k))) return 'Paddles';
         if (APPAREL_KEYWORDS.some(k => nameL.includes(k))) return 'Apparel';
@@ -1645,13 +1646,16 @@ async function handleXLSXUpload(input) {
       // Get current location from selector
       const loc = document.getElementById('cr-action-loc')?.value || 'f52';
 
-      // Parse rows
+      // Parse rows — skip variant sub-rows (blank name, "Variation Name" cat, "Manufacturer" brand)
       const toImport = [];
       const seen = {};
       for (const row of rows.slice(1)) {
         const name = String(row[nameIdx]||'').trim();
-        if (!name) continue;
+        if (!name || name === ' ') continue;
+        const rowBrand = brandIdx >= 0 ? String(row[brandIdx]||'').trim() : '';
+        if (rowBrand === 'Manufacturer') continue;
         const crCat = String(row[catIdx]||'').trim();
+        if (crCat === 'Variation Name') continue;
         const cat = getCategory(crCat, name);
         if (!cat) continue;
 
