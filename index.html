@@ -430,7 +430,8 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#f8f9ff}
               </select>
             </div>
             <div class="form-row"><label class="form-label">Categories (Buyers)</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px" id="inv-cats"></div></div>
-            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="inviteTeamMember()"><i class="ti ti-mail"></i>Send Invitation</button>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="inviteTeamMember()"><i class="ti ti-mail"></i>Add To Lodge Locker</button>
+            <div id="inv-result"></div>
           </div>
         </div>
       </div>
@@ -1293,7 +1294,10 @@ async function renderTeamTab(){
   await loadTeamMembers();
   document.getElementById('team-list').innerHTML=teamMembers.length===0
     ?`<div style="padding:18px;text-align:center;color:var(--text-3)">No team members yet</div>`
-    :`<table><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Categories</th><th></th></tr></thead><tbody>${teamMembers.map(m=>`<tr><td style="font-weight:600">${m.name}</td><td><span class="badge badge-${m.role.toLowerCase()}">${m.role}</span></td><td style="font-size:11.5px;color:var(--text-2)">${m.email}</td><td>${(m.categories||[]).map(c=>`<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:600;background:var(--f52-light);color:var(--f52-dark);margin:2px">${CAT_ICONS[c]||''} ${c}</span>`).join('')||'—'}</td><td>${currentMember?.role==='Admin'?`<button class="btn btn-danger btn-sm" onclick="removeMember('${m.id}')"><i class="ti ti-trash"></i></button>`:''}</td></tr>`).join('')}</tbody></table>`;
+    :`<table><thead><tr><th>Name</th><th>Role</th><th>Email</th><th>Categories</th><th></th></tr></thead><tbody>${teamMembers.map(m=>`<tr><td style="font-weight:600">${m.name}</td><td><span class="badge badge-${m.role.toLowerCase()}">${m.role}</span></td><td style="font-size:11.5px;color:var(--text-2)">${m.email}</td><td>${(m.categories||[]).map(c=>`<span style="display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10.5px;font-weight:600;background:var(--f52-light);color:var(--f52-dark);margin:2px">${CAT_ICONS[c]||''} ${c}</span>`).join('')||'—'}</td><td>${currentMember?.role==='Admin'?`<div style="display:flex;gap:4px">
+          <button class="btn btn-sm" onclick="adminResetPassword('${m.email}', '${m.name}')" title="Reset password"><i class="ti ti-key"></i></button>
+          <button class="btn btn-danger btn-sm" onclick="removeMember('${m.id}', '${m.name}')" title="Remove member"><i class="ti ti-trash"></i></button>
+        </div>`:''}</td></tr>`).join('')}</tbody></table>`;
   const mapEl=document.getElementById('cat-buyer-map');
   if(mapEl)mapEl.innerHTML=CATS.map(c=>{const buyers=teamMembers.filter(m=>(m.categories||[]).includes(c));return`<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border)"><div style="font-weight:500">${CAT_ICONS[c]} ${c}</div><div>${buyers.length?buyers.map(b=>`<span class="buyer-tag"><i class="ti ti-user" style="font-size:11px"></i>${b.name}</span>`).join(' '):'<span style="color:var(--text-3);font-size:11px">Unassigned</span>'}</div></div>`;}).join('');
 }
@@ -1303,19 +1307,73 @@ async function inviteTeamMember(){
   const role=document.getElementById('inv-role').value;
   if(!name||!email){toast('Enter name and email');return;}
   const cats=CATS.filter(c=>document.getElementById('inv-cat-'+c)?.classList.contains('on'));
-  // Create team_members record first (auth_id will link when they accept invite)
-  const{error:tmErr}=await sb.from('team_members').insert({name,email,role,categories:cats});
-  if(tmErr){toast('Error: '+tmErr.message);return;}
-  // NOTE: Sending the actual invitation email requires the Supabase Admin API
-  // which needs a Service Role key — do this from Supabase Dashboard → Auth → Users → Invite
-  toast(`${name} added! Go to Supabase → Auth → Users → Invite to send their login email.`);
-  document.getElementById('inv-name').value='';document.getElementById('inv-email').value='';
+
+  // Check if already exists
+  const{data:existing}=await sb.from('team_members').select('id').eq('email',email).single();
+  if(existing){toast('A team member with that email already exists');return;}
+
+  const{error}=await sb.from('team_members').insert({name,email,role,categories:cats,active:true});
+  if(error){toast('Error: '+error.message);return;}
+
+  // Show next-step instructions
+  const resultEl=document.getElementById('inv-result');
+  if(resultEl)resultEl.innerHTML=`
+    <div style="background:#f0f2fa;border:1px solid #d8dcf0;border-radius:var(--r-md);padding:14px;margin-top:12px">
+      <div style="font-weight:600;color:var(--navy);margin-bottom:8px"><i class="ti ti-circle-check" style="color:var(--green)"></i> ${name} added!</div>
+      <div style="font-size:12px;color:var(--text-2);line-height:1.9">
+        <strong>To send their login invite:</strong><br>
+        1. Go to <a href="https://supabase.com" target="_blank" style="color:var(--navy);font-weight:600">supabase.com</a> → your project<br>
+        2. Click <strong>Authentication → Users → Invite User</strong><br>
+        3. Enter <strong>${email}</strong> and send<br>
+        4. They'll get an email to set their password and log in at <strong>lodgelocker.com</strong>
+      </div>
+    </div>`;
+
+  document.getElementById('inv-name').value='';
+  document.getElementById('inv-email').value='';
   CATS.forEach(c=>{const b=document.getElementById('inv-cat-'+c);if(b)b.classList.remove('on');});
   await renderTeamTab();
 }
-async function removeMember(id){
+
+async function removeMember(id, name) {
+  const confirmed = window.confirm(
+    `Remove ${name} from Lodge Locker?\n\nThis will revoke their access immediately. This cannot be undone from the app — you would need to re-add them manually.`
+  );
+  if (!confirmed) return;
   await sb.from('team_members').update({active:false}).eq('id',id);
-  await renderTeamTab();toast('Member removed');
+  await renderTeamTab();
+  toast(name + ' removed from team');
+}
+
+async function adminResetPassword(email, name) {
+  const newPw = window.prompt(
+    `Reset password for ${name} (${email})\n\nEnter a temporary password to set for them:\n(minimum 8 characters)`,
+    'TempPass' + Math.floor(1000 + Math.random() * 9000) + '!'
+  );
+  if (!newPw) return;
+  if (newPw.length < 8) { toast('Password must be at least 8 characters'); return; }
+
+  // Call a Supabase RPC to reset the password server-side
+  const { error } = await sb.rpc('admin_reset_password', {
+    user_email: email,
+    new_password: newPw
+  });
+
+  if (error) {
+    // Fallback: show SQL they can run
+    const sql = `update auth.users set encrypted_password = crypt('${newPw}', gen_salt('bf')), email_confirmed_at = now() where email = '${email}';`;
+    window.prompt(
+      `Could not reset automatically. Run this in Supabase SQL Editor:`,
+      sql
+    );
+    return;
+  }
+
+  // Show the temp password so admin can share it
+  window.alert(
+    `Password reset for ${name}!\n\nTemporary password: ${newPw}\n\nShare this with them securely. They can change it after logging in via their avatar → Account.`
+  );
+  toast(`Password reset for ${name}`);
 }
 
 // ── EMAIL PO ───────────────────────────────────────────────────────
